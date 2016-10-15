@@ -15,10 +15,9 @@ h1 {
     padding: 2% 20%;
 }
 
-canvas {
+#gameCanvas {
     display: block;
-    width: 650px;
-    height: 400px;
-    margin: 0 auto;
+    margin: 2% auto;
     background-color: #111;
+    border: 1px solid #6796a3;
 }
