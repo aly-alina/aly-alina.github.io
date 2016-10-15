@@ -1,13 +1,22 @@
+@font-face {
+    font-family: 'northregular';
+    src: url('../fonts/webfontkit-20161015-145453/north-webfont.woff2') format('woff2'),
+         url('../fonts/webfontkit-20161015-145453/north-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 * {
     padding: 0;
     margin: 0;
 }
 
 body {
-    background-color: #111;
+    background: url(../images/pEeUsp1.jpg);
     margin: 0 auto;
     text-align: center;
-    font-family: sans-serif;
+    font-family: 'northregular';
     color: white;
 }
 
@@ -19,5 +28,4 @@ h1 {
     display: block;
     margin: 2% auto;
     background-color: #111;
-    border: 1px solid #6796a3;
 }
