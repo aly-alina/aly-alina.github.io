@@ -14,7 +14,7 @@ var ball = {
     ySpeed: -2,
     color: "#655e6e"
 }
-ball.y = canvas.height - ball.radius;
+ball.y = canvas.height - ball.radius * 3;
 
 var paddle = {
     width: 90,
@@ -74,8 +74,16 @@ var drawBall = function() {
     
     if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0)
         ball.xSpeed = -ball.xSpeed;
-    if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0)
+    if (ball.y - ball.radius < 0)
         ball.ySpeed = -ball.ySpeed;
+    else if (ball.y + ball.radius > canvas.height - paddle.height) {
+        if (ball.x > (paddle.x - paddle.width/2) && ball.x < (paddle.x + paddle.width/2))
+            ball.ySpeed = -ball.ySpeed;
+        else {
+            alert("Game ooooover");
+            document.location.reload();
+        }
+    }
     
     ball.x += ball.xSpeed;
     ball.y += ball.ySpeed;
