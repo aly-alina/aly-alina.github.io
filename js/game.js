@@ -19,9 +19,69 @@ var paddle = {
     speed: 5
 };
 
+var bricksLevelFeaturesArray = [
+    {
+        numberOfBricks: 40,
+        bricksPattern: [
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false]
+        ]
+    },
+    {
+        numberOfBricks: 32,
+        bricksPattern: [
+            [false, false, true, false, false, false, false, true, false, false],
+            [false, false, false, true, false, false, true, false, false, false],
+            [false, false, false, true, false, false, true, false, false, false],
+            [false, false, true, false, false, false, false, true, false, false]
+        ]
+    },
+    {
+        numberOfBricks: 35,
+        bricksPattern: [
+            [true, false, true, false, true, false, true, false, true, false],
+            [false, true, false, true, false, true, false, true, false, true],
+            [true, false, true, false, true, false, true, false, true, false],
+            [false, true, false, true, false, true, false, true, false, true],
+            [true, false, true, false, true, false, true, false, true, false],
+            [false, true, false, true, false, true, false, true, false, true],
+            [true, false, true, false, true, false, true, false, true, false]
+        ]
+    },
+    {
+        numberOfBricks: 38,
+        bricksPattern: [
+            [false, false, true, false, false, false, true, false, false, false],
+            [true, false, true, false, true, false, true, false, true, false],
+            [true, false, false, false, true, false, false, false, true, false],
+            [true, false, true, false, true, false, true, false, true, false],
+            [false, false, true, false, false, false, true, false, false, false],
+            [true, false, true, false, true, false, true, false, true, false]
+        ]
+    },
+    {
+        numberOfBricks: 32,
+        bricksPattern: [
+            [false, false, false, false, false, false, false, false, true, true],
+            [false, false, false, false, false, false, true, true, false, false],
+            [false, false, false, false, true, true, false, false, false, false],
+            [false, false, true, true, false, false, false, false, false, false]
+        ]
+    },
+    {
+        numberOfBricks: 32,
+        bricksPattern: [
+            [true, false, false, false, false, false, false, false, false, true],
+            [false, false, false, false, true, true, false, false, false, false],
+            [true, false, false, false, false, false, false, false, false, true],
+            [false, false, false, false, true, true, false, false, false, false]
+        ]
+    }
+];
+
 var bricksProperties = {
-    rows: 4,
-    columns: 10,
     offsetTop: 40,
     offsetLeft: 30,
     width: 45,
@@ -111,11 +171,13 @@ var drawBall = function() {
 };
 
 var drawBricks = function() {
-    for (var i = 0; i < bricksProperties.rows; i++) {
-        for (var j = 0; j < bricksProperties.columns; j++) {
+    for (var i = 0; i < bricksLevelFeaturesArray[level].bricksPattern.length; i++) {
+        for (var j = 0; j < bricksLevelFeaturesArray[level].bricksPattern[i].length; j++) {
             if (!bricks[i][j].wasHit) {
-                var brickX = (bricksProperties.width + bricksProperties.padding) * j + bricksProperties.offsetLeft;
-                var brickY = (bricksProperties.height + bricksProperties.padding) * i + bricksProperties.offsetTop;
+                var brickX = (bricksProperties.width + bricksProperties.padding) * j
+                    + bricksProperties.offsetLeft;
+                var brickY = (bricksProperties.height + bricksProperties.padding) * i
+                    + bricksProperties.offsetTop;
                 bricks[i][j] = {x: brickX, y: brickY, wasHit: false};
                 drawRectangle(bricks[i][j].x, bricks[i][j].y,
                     bricksProperties.width,
@@ -153,8 +215,8 @@ var drawText = function(font, style, text, x, y, middle) {
 }
 
 var detectBricksCollision = function() {
-    for (var i = 0; i < bricksProperties.rows; i++) {
-        for (var j = 0; j < bricksProperties.columns; j++) {
+    for (var i = 0; i < bricksLevelFeaturesArray[level].bricksPattern.length; i++) {
+        for (var j = 0; j < bricksLevelFeaturesArray[level].bricksPattern[i].length; j++) {
             var thisBrick = bricks[i][j];
             if (!thisBrick.wasHit) {
                 if (ball.x > thisBrick.x
@@ -164,7 +226,7 @@ var detectBricksCollision = function() {
                     ball.ySpeed = -ball.ySpeed;
                     thisBrick.wasHit = true;
                     score++;
-                    if (score == bricksProperties.rows * bricksProperties.columns) {
+                    if (score == bricksLevelFeaturesArray[level].numberOfBricks) {
                         advanceLevel();
                     }
                 }
@@ -192,10 +254,10 @@ var drawRectangle = function(x, y, width, height, color) {
 /* ---------- INIT ---------- */
 
 var bricksInit = function() {
-    for (var i = 0; i < bricksProperties.rows; i++) {
+    for (var i = 0; i < bricksLevelFeaturesArray[level].bricksPattern.length; i++) {
         bricks[i] = [];
-        for (var j = 0; j < bricksProperties.columns; j++) {
-            bricks[i][j] = {x: 0, y: 0, wasHit: false};
+        for (var j = 0; j < bricksLevelFeaturesArray[level].bricksPattern[i].length; j++) {
+            bricks[i][j] = {x: 0, y: 0, wasHit: bricksLevelFeaturesArray[level].bricksPattern[i][j]};
         }
     }
 }
@@ -209,7 +271,7 @@ var init = function() {
 
 var initLevel = function() {
     if (level < 6) {
-        score = 38;
+        score = 0;
         ball.x = canvas.width / 2;
         ball.y = canvas.height - ball.radius * 3;
         paddle.x = canvas.width / 2 - paddle.width / 2;
