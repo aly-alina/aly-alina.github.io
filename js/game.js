@@ -7,19 +7,62 @@ var canvas = document.getElementById("gameCanvas");
 var canvasCtx = canvas.getContext("2d");
 
 var ball = {
-    radius: 20,
-    x: 0,
+    radius: 17,
+    x: canvas.width / 2,
     y: 0,
     xSpeed: 2,
     ySpeed: -2,
     color: "#655e6e"
 }
-ball.x = canvas.width / 2;
 ball.y = canvas.height - ball.radius;
+
+var paddle = {
+    width: 90,
+    height: 13,
+    x: canvas.width / 2,
+    color: "#558651",
+    speed: 5
+}
+
+var keys = {
+    rightPressed: false,
+    leftPressed: false
+}
+
+var keyDownHandler = function(e) {
+    if (e.keyCode == 39) {
+        keys.rightPressed = true;
+        console.log('hit');
+    }
+    else if (e.keyCode == 37)
+        keys.leftPressed = true;
+}
+
+var keyUpHandler = function(e) {
+    if (e.keyCode == 39) {
+        keys.rightPressed = false;
+        console.log('up');
+    }
+    else if (e.keyCode == 37)
+        keys.leftPressed = false;
+}
 
 var draw = function() {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
+    drawPaddle();
+}
+
+var drawPaddle = function() {
+    canvasCtx.beginPath();
+    canvasCtx.rect(paddle.x - paddle.width / 2, canvas.height - paddle.height, paddle.width, paddle.height);
+    canvasCtx.fillStyle = paddle.color;
+    canvasCtx.fill();
+    canvasCtx.closePath;
+    if (keys.rightPressed && paddle.x < canvas.width - paddle.width/2)
+        paddle.x += paddle.speed;
+    if (keys.leftPressed && paddle.x > paddle.width/2)
+        paddle.x -= paddle.speed;
 }
 
 var drawBall = function() {
@@ -39,6 +82,8 @@ var drawBall = function() {
 }
 
 var init = function() {
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
     setInterval(draw, 10);
 }
 
