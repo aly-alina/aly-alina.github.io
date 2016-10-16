@@ -62,6 +62,13 @@ var keyUpHandler = function(e) {
         keys.leftPressed = false;
 };
 
+var mousemoveHandler = function(e) {
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if (relativeX > 0 && relativeX < canvas.width) {
+        paddle.x = relativeX - paddle.width / 2;
+    }
+}
+
 /* ------------ DRAW FUNCTIONS ----------- */
 
 var draw = function() {
@@ -175,6 +182,7 @@ var bricksInit = function() {
 var init = function() {
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
+    document.addEventListener("mousemove", mousemoveHandler, false)
     bricksInit();
     setInterval(draw, 10);
 };
