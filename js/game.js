@@ -67,6 +67,7 @@ var draw = function() {
     drawBricks();
     drawPaddle();
     drawBall();
+    detectBricksCollision();
 };
 
 var drawPaddle = function() {
@@ -118,7 +119,20 @@ var drawBricks = function() {
     }
 };
 
-/* ---------- STATIC FUNCTIONS --------- */
+/* ---------- COMMON FUNCTIONS --------- */
+
+var detectBricksCollision = function() {
+    for (var i = 0; i < bricksProperties.rows; i++) {
+        for (var j = 0; j < bricksProperties.columns; j++) {
+            var thisBrick = bricks[i][j];
+            if (ball.x > thisBrick.x
+                    && ball.x < thisBrick.x + bricksProperties.width
+                    && ball.y > thisBrick.y
+                    && ball.y < thisBrick.y + bricksProperties.height)
+                ball.ySpeed = -ball.ySpeed;
+        }
+    }
+};
 
 var drawRectangle = function(x, y, width, height, color) {
     canvasCtx.beginPath();
