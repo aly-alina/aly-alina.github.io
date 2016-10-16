@@ -28,6 +28,12 @@ var drawBall = function() {
     canvasCtx.fillStyle = ball.color;
     canvasCtx.fill();
     canvasCtx.closePath();
+    
+    if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0)
+        ball.xSpeed = -ball.xSpeed;
+    if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0)
+        ball.ySpeed = -ball.ySpeed;
+    
     ball.x += ball.xSpeed;
     ball.y += ball.ySpeed;
 }
