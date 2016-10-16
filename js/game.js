@@ -209,7 +209,7 @@ var init = function() {
 
 var initLevel = function() {
     if (level < 6) {
-        score = 39;
+        score = 0;
         ball.x = canvas.width / 2;
         ball.y = canvas.height - ball.radius * 3;
         paddle.x = canvas.width / 2 - paddle.width / 2;
