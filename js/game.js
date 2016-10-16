@@ -131,8 +131,8 @@ var draw = function() {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawPaddle();
-    drawBall();
     drawScore();
+    drawBall();
     detectBricksCollision();
 };
 
@@ -161,13 +161,17 @@ var drawBall = function() {
             ball.ySpeed = -ball.ySpeed;
         }
         else {
-            alert("Game ooooover");
-            document.location.reload();  
+            finishTheGame();
         }
     }
     
     ball.x += ball.xSpeed;
     ball.y += ball.ySpeed;
+};
+
+var drawLose = function () {
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    drawText("25px 'northregular'", "#fff", "Game is over", 0, canvas.height / 2, true);
 };
 
 var drawBricks = function() {
@@ -250,6 +254,12 @@ var drawRectangle = function(x, y, width, height, color) {
     canvasCtx.fill();
     canvasCtx.closePath();
 };
+
+var finishTheGame = function () {
+    window.cancelAnimationFrame(requestId);
+    requestId = undefined;
+    drawLose();
+}
 
 /* ---------- INIT ---------- */
 
