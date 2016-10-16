@@ -67,12 +67,12 @@ var mousemoveHandler = function(e) {
 /* ------------ DRAW FUNCTIONS ----------- */
 
 var draw = function() {
+    requestId = window.requestAnimationFrame(draw);
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawPaddle();
     drawBall();
     drawScore();
-    requestId = window.requestAnimationFrame(draw);
     detectBricksCollision();
 };
 
@@ -132,7 +132,7 @@ var drawScore = function() {
 
 var drawLevel = function () {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    drawText("30px 'northregular'", "#fff", "Level " + (level + 1), 0, canvas.height / 2, true);
+    drawText("30px northregular", "#fff", "Level " + (level + 1), 0, canvas.height / 2, true);
 };
 
 var drawCongrats = function() {
@@ -204,12 +204,12 @@ var init = function() {
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mousemoveHandler, false);
-    initLevel();
+    setTimeout(initLevel, 500); // let the font load
 };
 
 var initLevel = function() {
     if (level < 6) {
-        score = 0;
+        score = 38;
         ball.x = canvas.width / 2;
         ball.y = canvas.height - ball.radius * 3;
         paddle.x = canvas.width / 2 - paddle.width / 2;
@@ -221,4 +221,4 @@ var initLevel = function() {
     }
 };
 
-init();
+window.onload = init();
