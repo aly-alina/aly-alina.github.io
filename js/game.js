@@ -1,8 +1,3 @@
-// #558651
-// #ffc66d
-// #cc7832
-// #6796a3
-
 /* -------- GLOBAL VARIABLES ----------- */
 var canvas = document.getElementById("gameCanvas");
 var canvasCtx = canvas.getContext("2d");
@@ -11,8 +6,8 @@ var ball = {
     radius: 10,
     x: canvas.width / 2,
     y: 0,
-    xSpeed: 2,
-    ySpeed: -2,
+    xSpeed: 3,
+    ySpeed: -3,
     color: "#655e6e"
 };
 ball.y = canvas.height - ball.radius * 3;
@@ -78,6 +73,7 @@ var draw = function() {
     drawBall();
     detectBricksCollision();
     drawScore();
+    requestAnimationFrame(draw);
 };
 
 var drawPaddle = function() {
@@ -184,7 +180,8 @@ var init = function() {
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mousemoveHandler, false)
     bricksInit();
-    setInterval(draw, 10);
+    // setInterval(draw, 10);
+    draw();
 };
 
 init();
