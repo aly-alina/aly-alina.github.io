@@ -106,15 +106,16 @@ var drawBall = function() {
 
 var drawBricks = function() {
     for (var i = 0; i < bricksProperties.rows; i++) {
-        bricks[i] = [];
         for (var j = 0; j < bricksProperties.columns; j++) {
-            var brickX = (bricksProperties.width + bricksProperties.padding) * j + bricksProperties.offsetLeft;
-            var brickY = (bricksProperties.height + bricksProperties.padding) * i + bricksProperties.offsetTop;
-            bricks[i][j] = {x: brickX, y: brickY};
-            drawRectangle(bricks[i][j].x, bricks[i][j].y,
-                bricksProperties.width,
-                bricksProperties.height,
-                bricksProperties.color);
+            if (!bricks[i][j].wasHit) {
+                var brickX = (bricksProperties.width + bricksProperties.padding) * j + bricksProperties.offsetLeft;
+                var brickY = (bricksProperties.height + bricksProperties.padding) * i + bricksProperties.offsetTop;
+                bricks[i][j] = {x: brickX, y: brickY, wasHit: false};
+                drawRectangle(bricks[i][j].x, bricks[i][j].y,
+                    bricksProperties.width,
+                    bricksProperties.height,
+                    bricksProperties.color);
+            }
         }
     }
 };
@@ -125,11 +126,15 @@ var detectBricksCollision = function() {
     for (var i = 0; i < bricksProperties.rows; i++) {
         for (var j = 0; j < bricksProperties.columns; j++) {
             var thisBrick = bricks[i][j];
-            if (ball.x > thisBrick.x
-                    && ball.x < thisBrick.x + bricksProperties.width
-                    && ball.y > thisBrick.y
-                    && ball.y < thisBrick.y + bricksProperties.height)
-                ball.ySpeed = -ball.ySpeed;
+            if (!thisBrick.wasHit) {
+                if (ball.x > thisBrick.x
+                        && ball.x < thisBrick.x + bricksProperties.width
+                        && ball.y > thisBrick.y
+                        && ball.y < thisBrick.y + bricksProperties.height) {
+                    ball.ySpeed = -ball.ySpeed;
+                    thisBrick.wasHit = true;
+                }
+            }
         }
     }
 };
@@ -144,9 +149,19 @@ var drawRectangle = function(x, y, width, height, color) {
 
 /* ---------- INIT ---------- */
 
+var bricksInit = function() {
+    for (var i = 0; i < bricksProperties.rows; i++) {
+        bricks[i] = [];
+        for (var j = 0; j < bricksProperties.columns; j++) {
+            bricks[i][j] = {x: 0, y: 0, wasHit: false};
+        }
+    }
+}
+
 var init = function() {
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
+    bricksInit();
     setInterval(draw, 10);
 };
 
