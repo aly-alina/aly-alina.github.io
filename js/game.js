@@ -127,20 +127,30 @@ var drawBricks = function() {
 };
 
 var drawScore = function() {
-    canvasCtx.font = "16px 'northregular'";
-    canvasCtx.fillStyle = "#fff";
-    canvasCtx.fillText("Score: " + score, 8, 20);
+    drawText("16px 'northregular'", "#fff", "Score: " + score, 8, 20, false);
 }
 
 var drawLevel = function () {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    canvasCtx.font = "30px 'northregular'";
-    canvasCtx.fillStyle = "#fff";
-    var text = "Level " + (level + 1);
-    canvasCtx.fillText(text, (canvas.width / 2) - (canvasCtx.measureText(text).width / 2), canvas.height / 2);
-}
+    drawText("30px 'northregular'", "#fff", "Level " + (level + 1), 0, canvas.height / 2, true);
+};
+
+var drawCongrats = function() {
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    drawText("25px 'northregular'", "#fff", "You won the game! Awesome!", 0, canvas.height / 2, true);
+};
 
 /* ---------- COMMON FUNCTIONS --------- */
+
+var drawText = function(font, style, text, x, y, middle) {
+    canvasCtx.font = font;
+    canvasCtx.fillStyle = style;
+    if (middle) {
+        canvasCtx.fillText(text, (canvas.width / 2) - (canvasCtx.measureText(text).width / 2), y);
+    } else {
+        canvasCtx.fillText(text, x, y);
+    }
+}
 
 var detectBricksCollision = function() {
     for (var i = 0; i < bricksProperties.rows; i++) {
@@ -198,13 +208,17 @@ var init = function() {
 };
 
 var initLevel = function() {
-    score = 0;
-    ball.x = canvas.width / 2;
-    ball.y = canvas.height - ball.radius * 3;
-    paddle.x = canvas.width / 2 - paddle.width / 2;
-    drawLevel();
-    bricksInit();
-    setTimeout(draw, 3000); // let see the level before game starts
+    if (level < 6) {
+        score = 39;
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height - ball.radius * 3;
+        paddle.x = canvas.width / 2 - paddle.width / 2;
+        drawLevel();
+        bricksInit();
+        setTimeout(draw, 3000); // let see the level before game starts
+    } else {
+        drawCongrats();
+    }
 };
 
 init();
