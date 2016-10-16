@@ -14,7 +14,7 @@ var ball = {
     xSpeed: 2,
     ySpeed: -2,
     color: "#655e6e"
-}
+};
 ball.y = canvas.height - ball.radius * 3;
 
 var paddle = {
@@ -23,7 +23,7 @@ var paddle = {
     x: 0,
     color: "#558651",
     speed: 5
-}
+};
 paddle.x = canvas.width / 2 - paddle.width / 2;
 
 var bricksProperties = {
@@ -35,14 +35,14 @@ var bricksProperties = {
     height: 12,
     padding: 10,
     color: "#6796a3"
-}
+};
 
 var bricks = [];
 
 var keys = {
     rightPressed: false,
     leftPressed: false
-}
+};
 
 /* ----------- EVENT HANDLERS ----------- */
 
@@ -51,14 +51,14 @@ var keyDownHandler = function(e) {
         keys.rightPressed = true;
     else if (e.keyCode == 37)
         keys.leftPressed = true;
-}
+};
 
 var keyUpHandler = function(e) {
     if (e.keyCode == 39)
         keys.rightPressed = false;
     else if (e.keyCode == 37)
         keys.leftPressed = false;
-}
+};
 
 /* ------------ DRAW FUNCTIONS ----------- */
 
@@ -67,7 +67,7 @@ var draw = function() {
     drawBricks();
     drawPaddle();
     drawBall();
-}
+};
 
 var drawPaddle = function() {
     drawRectangle(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height, paddle.color);
@@ -75,7 +75,7 @@ var drawPaddle = function() {
         paddle.x += paddle.speed;
     if (keys.leftPressed && paddle.x > 0)
         paddle.x -= paddle.speed;
-}
+};
 
 var drawBall = function() {
     canvasCtx.beginPath();
@@ -101,7 +101,7 @@ var drawBall = function() {
     
     ball.x += ball.xSpeed;
     ball.y += ball.ySpeed;
-}
+};
 
 var drawBricks = function() {
     for (var i = 0; i < bricksProperties.rows; i++) {
@@ -116,7 +116,7 @@ var drawBricks = function() {
                 bricksProperties.color);
         }
     }
-}
+};
 
 /* ---------- STATIC FUNCTIONS --------- */
 
@@ -125,8 +125,8 @@ var drawRectangle = function(x, y, width, height, color) {
     canvasCtx.rect(x, y, width, height);
     canvasCtx.fillStyle = color;
     canvasCtx.fill();
-    canvasCtx.closePath;
-}
+    canvasCtx.closePath();
+};
 
 /* ---------- INIT ---------- */
 
@@ -134,6 +134,6 @@ var init = function() {
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
     setInterval(draw, 10);
-}
+};
 
 init();
