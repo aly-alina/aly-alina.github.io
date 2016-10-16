@@ -40,6 +40,7 @@ var keys = {
 };
 
 var score = 0;
+var level = 0;
 
 /* ----------- EVENT HANDLERS ----------- */
 
@@ -132,6 +133,14 @@ var drawScore = function() {
     canvasCtx.fillText("Score: " + score, 8, 20);
 }
 
+var drawLevel = function () {
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    canvasCtx.font = "30px 'northregular'";
+    canvasCtx.fillStyle = "#fff";
+    var text = "Level " + (level + 1);
+    canvasCtx.fillText(text, (canvas.width / 2) - (canvasCtx.measureText(text).width / 2), canvas.height / 2);
+}
+
 /* ---------- COMMON FUNCTIONS --------- */
 
 var detectBricksCollision = function() {
@@ -178,10 +187,14 @@ var bricksInit = function() {
 var init = function() {
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
-    document.addEventListener("mousemove", mousemoveHandler, false)
-    bricksInit();
-    // setInterval(draw, 10);
-    draw();
+    document.addEventListener("mousemove", mousemoveHandler, false);
+    initLevel();
 };
+
+var initLevel = function() {
+    drawLevel();
+    bricksInit();
+    setTimeout(draw, 3000);
+}
 
 init();
