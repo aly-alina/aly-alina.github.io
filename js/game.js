@@ -29,7 +29,7 @@ paddle.x = canvas.width / 2 - paddle.width / 2;
 var bricksProperties = {
     rows: 4,
     columns: 10,
-    offsetTop: 30,
+    offsetTop: 40,
     offsetLeft: 30,
     width: 45,
     height: 12,
@@ -43,6 +43,8 @@ var keys = {
     rightPressed: false,
     leftPressed: false
 };
+
+var score = 0;
 
 /* ----------- EVENT HANDLERS ----------- */
 
@@ -68,6 +70,7 @@ var draw = function() {
     drawPaddle();
     drawBall();
     detectBricksCollision();
+    drawScore();
 };
 
 var drawPaddle = function() {
@@ -120,6 +123,12 @@ var drawBricks = function() {
     }
 };
 
+var drawScore = function() {
+    canvasCtx.font = "16px 'northregular'";
+    canvasCtx.fillStyle = "#fff";
+    canvasCtx.fillText("Score: " + score, 8, 20);
+}
+
 /* ---------- COMMON FUNCTIONS --------- */
 
 var detectBricksCollision = function() {
@@ -133,6 +142,7 @@ var detectBricksCollision = function() {
                         && ball.y < thisBrick.y + bricksProperties.height) {
                     ball.ySpeed = -ball.ySpeed;
                     thisBrick.wasHit = true;
+                    score++;
                 }
             }
         }
