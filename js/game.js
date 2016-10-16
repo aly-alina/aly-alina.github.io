@@ -70,11 +70,7 @@ var draw = function() {
 }
 
 var drawPaddle = function() {
-    canvasCtx.beginPath();
-    canvasCtx.rect(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height);
-    canvasCtx.fillStyle = paddle.color;
-    canvasCtx.fill();
-    canvasCtx.closePath;
+    drawRectangle(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height, paddle.color);
     if (keys.rightPressed && paddle.x + paddle.width < canvas.width)
         paddle.x += paddle.speed;
     if (keys.leftPressed && paddle.x > 0)
@@ -114,13 +110,22 @@ var drawBricks = function() {
             var brickX = (bricksProperties.width + bricksProperties.padding) * j + bricksProperties.offsetLeft;
             var brickY = (bricksProperties.height + bricksProperties.padding) * i + bricksProperties.offsetTop;
             bricks[i][j] = {x: brickX, y: brickY};
-            canvasCtx.beginPath();
-            canvasCtx.rect(bricks[i][j].x, bricks[i][j].y, bricksProperties.width, bricksProperties.height);
-            canvasCtx.fillStyle = bricksProperties.color;
-            canvasCtx.fill();
-            canvasCtx.closePath;
+            drawRectangle(bricks[i][j].x, bricks[i][j].y,
+                bricksProperties.width,
+                bricksProperties.height,
+                bricksProperties.color);
         }
     }
+}
+
+/* ---------- STATIC FUNCTIONS --------- */
+
+var drawRectangle = function(x, y, width, height, color) {
+    canvasCtx.beginPath();
+    canvasCtx.rect(x, y, width, height);
+    canvasCtx.fillStyle = color;
+    canvasCtx.fill();
+    canvasCtx.closePath;
 }
 
 /* ---------- INIT ---------- */
