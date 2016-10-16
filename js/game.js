@@ -3,6 +3,7 @@
 // #cc7832
 // #6796a3
 
+/* -------- GLOBAL VARIABLES ----------- */
 var canvas = document.getElementById("gameCanvas");
 var canvasCtx = canvas.getContext("2d");
 
@@ -26,19 +27,24 @@ var paddle = {
 paddle.x = canvas.width / 2 - paddle.width / 2;
 
 var bricksProperties = {
-    rows: 3,
+    rows: 4,
     columns: 10,
     offsetTop: 30,
     offsetLeft: 30,
     width: 45,
     height: 12,
-    padding: 10
+    padding: 10,
+    color: "#6796a3"
 }
+
+var bricks = [];
 
 var keys = {
     rightPressed: false,
     leftPressed: false
 }
+
+/* ----------- EVENT HANDLERS ----------- */
 
 var keyDownHandler = function(e) {
     if (e.keyCode == 39)
@@ -54,8 +60,11 @@ var keyUpHandler = function(e) {
         keys.leftPressed = false;
 }
 
+/* ------------ DRAW FUNCTIONS ----------- */
+
 var draw = function() {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBricks();
     drawPaddle();
     drawBall();
 }
@@ -89,8 +98,6 @@ var drawBall = function() {
             ball.ySpeed = -ball.ySpeed;
         }
         else {
-            console.log(ball.x);
-            console.log(paddle.x);
             alert("Game ooooover");
             document.location.reload();  
         }
@@ -99,6 +106,24 @@ var drawBall = function() {
     ball.x += ball.xSpeed;
     ball.y += ball.ySpeed;
 }
+
+var drawBricks = function() {
+    for (var i = 0; i < bricksProperties.rows; i++) {
+        bricks[i] = [];
+        for (var j = 0; j < bricksProperties.columns; j++) {
+            var brickX = (bricksProperties.width + bricksProperties.padding) * j + bricksProperties.offsetLeft;
+            var brickY = (bricksProperties.height + bricksProperties.padding) * i + bricksProperties.offsetTop;
+            bricks[i][j] = {x: brickX, y: brickY};
+            canvasCtx.beginPath();
+            canvasCtx.rect(bricks[i][j].x, bricks[i][j].y, bricksProperties.width, bricksProperties.height);
+            canvasCtx.fillStyle = bricksProperties.color;
+            canvasCtx.fill();
+            canvasCtx.closePath;
+        }
+    }
+}
+
+/* ---------- INIT ---------- */
 
 var init = function() {
     document.addEventListener("keydown", keyDownHandler, false);
