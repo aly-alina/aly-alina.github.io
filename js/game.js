@@ -25,6 +25,16 @@ var paddle = {
 }
 paddle.x = canvas.width / 2 - paddle.width / 2;
 
+var bricksProperties = {
+    rows: 3,
+    columns: 10,
+    offsetTop: 30,
+    offsetLeft: 30,
+    width: 45,
+    height: 12,
+    padding: 10
+}
+
 var keys = {
     rightPressed: false,
     leftPressed: false
