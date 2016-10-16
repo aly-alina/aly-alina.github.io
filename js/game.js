@@ -8,7 +8,7 @@ var canvas = document.getElementById("gameCanvas");
 var canvasCtx = canvas.getContext("2d");
 
 var ball = {
-    radius: 12,
+    radius: 10,
     x: canvas.width / 2,
     y: 0,
     xSpeed: 2,
@@ -18,7 +18,7 @@ var ball = {
 ball.y = canvas.height - ball.radius * 3;
 
 var paddle = {
-    width: 90,
+    width: 110,
     height: 13,
     x: 0,
     color: "#558651",
@@ -94,7 +94,7 @@ var drawBall = function() {
     if (ball.y - ball.radius < 0) {
         ball.ySpeed = -ball.ySpeed;
     } else if (ball.y + ball.ySpeed >= canvas.height - ball.radius - paddle.height) {
-        if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+        if (ball.x > paddle.x - ball.radius && ball.x < paddle.x + paddle.width + ball.radius) {
             ball.ySpeed = -ball.ySpeed;
         }
         else {
@@ -143,6 +143,10 @@ var detectBricksCollision = function() {
                     ball.ySpeed = -ball.ySpeed;
                     thisBrick.wasHit = true;
                     score++;
+                    if (score == bricksProperties.rows * bricksProperties.columns) {
+                        alert("Well done!");
+                        document.location.reload();
+                    }
                 }
             }
         }
