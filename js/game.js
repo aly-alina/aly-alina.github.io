@@ -4,13 +4,12 @@ var canvasCtx = canvas.getContext("2d");
 
 var ball = {
     radius: 10,
-    x: canvas.width / 2,
+    x: 0,
     y: 0,
     xSpeed: 3,
     ySpeed: -3,
     color: "#655e6e"
 };
-ball.y = canvas.height - ball.radius * 3;
 
 var paddle = {
     width: 110,
@@ -19,7 +18,6 @@ var paddle = {
     color: "#558651",
     speed: 5
 };
-paddle.x = canvas.width / 2 - paddle.width / 2;
 
 var bricksProperties = {
     rows: 4,
@@ -41,6 +39,7 @@ var keys = {
 
 var score = 0;
 var level = 0;
+var requestId;
 
 /* ----------- EVENT HANDLERS ----------- */
 
@@ -72,9 +71,9 @@ var draw = function() {
     drawBricks();
     drawPaddle();
     drawBall();
-    detectBricksCollision();
     drawScore();
-    requestAnimationFrame(draw);
+    requestId = window.requestAnimationFrame(draw);
+    detectBricksCollision();
 };
 
 var drawPaddle = function() {
@@ -156,13 +155,20 @@ var detectBricksCollision = function() {
                     thisBrick.wasHit = true;
                     score++;
                     if (score == bricksProperties.rows * bricksProperties.columns) {
-                        alert("Well done!");
-                        document.location.reload();
+                        advanceLevel();
                     }
                 }
             }
         }
     }
+};
+
+var advanceLevel = function() {
+    window.cancelAnimationFrame(requestId);
+    level++;
+    score = 0;
+    requestId = undefined;
+    initLevel()
 };
 
 var drawRectangle = function(x, y, width, height, color) {
@@ -192,9 +198,13 @@ var init = function() {
 };
 
 var initLevel = function() {
+    score = 0;
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height - ball.radius * 3;
+    paddle.x = canvas.width / 2 - paddle.width / 2;
     drawLevel();
     bricksInit();
-    setTimeout(draw, 3000);
-}
+    setTimeout(draw, 3000); // let see the level before game starts
+};
 
 init();
