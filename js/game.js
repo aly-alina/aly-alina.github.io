@@ -99,6 +99,8 @@ var keys = {
 
 var score = 0;
 var level = 0;
+var paddleIsBeingChosen = false;
+var numberOfPaddles = 1;
 var requestId;
 
 /* ----------- EVENT HANDLERS ----------- */
@@ -108,6 +110,13 @@ var keyDownHandler = function(e) {
         keys.rightPressed = true;
     else if (e.keyCode == 37)
         keys.leftPressed = true;
+    else if (paddleIsBeingChosen) {
+        if (e.keyCode == 49)
+            numberOfPaddles = 1;
+        else if (e.keyCode == 50)
+            numberOfPaddles = 2;
+        initLevel();
+    }
 };
 
 var keyUpHandler = function(e) {
@@ -115,6 +124,8 @@ var keyUpHandler = function(e) {
         keys.rightPressed = false;
     else if (e.keyCode == 37)
         keys.leftPressed = false;
+    else if (e.keyCode == 49 || e.keyCode == 50) // 1 or 2
+        paddleIsBeingChosen = false;
 };
 
 var mousemoveHandler = function(e) {
@@ -215,6 +226,12 @@ var drawCongrats = function() {
     drawText("25px 'northregular'", "#fff", "You won the game! Awesome!", 0, canvas.height / 2, true);
 };
 
+var drawPaddleChoice = function() {
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    drawText("18px 'northregular'", "#fff", 'To have 1 paddle press "1", to have 2 - "2"', 0, canvas.height / 2, true);
+    paddleIsBeingChosen = true;
+};
+
 /* ---------- COMMON FUNCTIONS --------- */
 
 var drawText = function(font, style, text, x, y, middle) {
@@ -289,7 +306,8 @@ var init = function() {
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mousemoveHandler, false);
     level = 0;
-    setTimeout(initLevel, 500); // let the font load
+    drawPaddleChoice();
+    // game continues when a user chooses number of paddles (keyDownHandler())
 };
 
 var initLevel = function() {
