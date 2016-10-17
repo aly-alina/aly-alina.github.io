@@ -17,7 +17,24 @@ var paddle = {
     x: 0,
     color: "#558651",
     speed: 5
-};
+}; // create one array of paddles, copy object with jQuery and refactor
+
+var twoPaddles = [
+    {
+        width: 110,
+        height: 13,
+        x: 0,
+        color: "#558651",
+        speed: 5
+    },
+    {
+        width: 110,
+        height: 13,
+        x: 0,
+        color: "#558651",
+        speed: 5
+    }
+];
 
 var bricksLevelFeaturesArray = [
     {
@@ -157,11 +174,33 @@ var draw = function() {
 };
 
 var drawPaddle = function() {
-    drawRectangle(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height, paddle.color);
-    if (keys.rightPressed && paddle.x + paddle.width < canvas.width)
-        paddle.x += paddle.speed;
-    if (keys.leftPressed && paddle.x > 0)
-        paddle.x -= paddle.speed;
+    if (numberOfPaddles == 1) {
+        drawRectangle(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height, paddle.color);
+        if (keys.rightPressed && paddle.x + paddle.width < canvas.width)
+            paddle.x += paddle.speed;
+        if (keys.leftPressed && paddle.x > 0)
+            paddle.x -= paddle.speed;
+    } else if (numberOfPaddles == 2) {
+        for (var i = 0; i < twoPaddles.length; i++) {
+            drawRectangle(twoPaddles[i].x,
+                canvas.height - twoPaddles[i].height,
+                twoPaddles[i].width,
+                twoPaddles[i].height,
+                twoPaddles[i].color);
+        }
+        if (keys.rightPressed) {
+            if (twoPaddles[0].x < canvas.width / 2 - twoPaddles[0].width)
+                twoPaddles[0].x += twoPaddles[0].speed;
+            if (twoPaddles[1].x < canvas.width - twoPaddles[1].width)
+                twoPaddles[1].x += twoPaddles[1].speed;
+        }
+        if (keys.leftPressed) {
+            if (twoPaddles[0].x > 0)
+                twoPaddles[0].x -= twoPaddles[0].speed;
+            if (twoPaddles[1].x > canvas.width / 2)
+                twoPaddles[1].x -= twoPaddles[1].speed;
+        }
+    }
 };
 
 var drawBall = function() {
@@ -171,16 +210,17 @@ var drawBall = function() {
     canvasCtx.fill();
     canvasCtx.closePath();
     
-    if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+    if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) { // if hit walls
         ball.xSpeed = -ball.xSpeed;
     }   
-    if (ball.y - ball.radius < 0) {
+    if (ball.y - ball.radius < 0) { // if hit ceiling
         ball.ySpeed = -ball.ySpeed;
-    } else if (ball.y + ball.ySpeed >= canvas.height - ball.radius - paddle.height) {
-        if (ball.x > paddle.x - ball.radius && ball.x < paddle.x + paddle.width + ball.radius) {
+    } else if (ball.y + ball.ySpeed >= canvas.height - ball.radius - paddle.height) { //if hits floor
+        if (numberOfPaddles == 1 && checkIfHitsOnePaddle(paddle.x, paddle.width)
+            || numberOfPaddles == 2 && (checkIfHitsOnePaddle(twoPaddles[0].x, twoPaddles[0].width)
+                || checkIfHitsOnePaddle(twoPaddles[1].x, twoPaddles[1].width))) { //if hits paddle(s)
             ball.ySpeed = -ball.ySpeed;
-        }
-        else {
+        } else {
             finishTheGame();
         }
     }
@@ -234,6 +274,11 @@ var drawPaddleChoice = function() {
 
 /* ---------- COMMON FUNCTIONS --------- */
 
+var checkIfHitsOnePaddle = function(thisPaddleX, thisPaddleWidth) {
+    return ball.x > thisPaddleX - ball.radius
+        && ball.x < thisPaddleX + thisPaddleWidth + ball.radius;
+};
+
 var drawText = function(font, style, text, x, y, middle) {
     canvasCtx.font = font;
     canvasCtx.fillStyle = style;
@@ -283,11 +328,20 @@ var drawRectangle = function(x, y, width, height, color) {
 var finishTheGame = function () {
     cancelAnimation();
     drawLose();
-}
+};
 
 var cancelAnimation = function() {
     window.cancelAnimationFrame(requestId);
     requestId = undefined;
+};
+
+var initPaddles = function () {
+    if (numberOfPaddles == 1) {
+        paddle.x = canvas.width / 2 - paddle.width / 2;
+    } else if (numberOfPaddles == 2) {
+        twoPaddles[0].x = 0;
+        twoPaddles[1].x = canvas.width / 2;
+    }
 };
 
 /* ---------- INIT ---------- */
@@ -315,9 +369,9 @@ var initLevel = function() {
         score = 0;
         ball.x = canvas.width / 2;
         ball.y = canvas.height - ball.radius * 3;
-        paddle.x = canvas.width / 2 - paddle.width / 2;
-        drawLevel();
+        initPaddles();
         bricksInit();
+        drawLevel();
         setTimeout(draw, 3000); // let see the level before game starts
     } else {
         drawCongrats();
