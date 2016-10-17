@@ -116,8 +116,9 @@ var keyboardKeys = {
 
 var score = 0;
 var currentLevel = 0;
-var requestId = 0; // used in requestAnimationFrame (function draw())
-var timeForLevel = 120000; // time given to finish the level otherwise, lose
+var numberOfLevels = 6;
+var requestId = 0; // used in requestAnimationFrame (function drawAllGameObjects())
+var timeForLevel = 120000; // time (ms) given to finish the level otherwise, lose
 var deadline = {}; // Date object to store when the level's timer is up
 var timeToDisplayLevelNumber = 3000; // delay before the game starts to show current level on the screen
 var numberOfPaddles = 1;
@@ -165,12 +166,12 @@ var mousemoveHandler = function(e) {
 };
 
 var start = function(e) {
-    init();
+    initGame();
 };
 
 var reset = function(e) {
     cancelAnimation();
-    init();
+    initGame();
 };
 
 var readme = function(e) {
@@ -179,10 +180,14 @@ var readme = function(e) {
     }
 };
 
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("mousemove", mousemoveHandler, false);
+
 /* ------------ DRAW FUNCTIONS ----------- */
 
-var draw = function() {
-    requestId = window.requestAnimationFrame(draw);
+var drawAllGameObjects = function() {
+    requestId = window.requestAnimationFrame(drawAllGameObjects);
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawPaddle();
@@ -291,7 +296,7 @@ var drawTimer = function() {
     }
 };
 
-var drawLevel = function () {
+var drawCurrentLevelNumber = function () {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawText("30px northregular", "#fff", "Level " + (currentLevel + 1), 0, canvas.height / 2, true);
 };
@@ -304,7 +309,6 @@ var drawCongrats = function() {
 var drawPaddleChoice = function() {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawText("18px 'northregular'", "#fff", 'To have 1 paddle press "1", to have 2 - "2"', 0, canvas.height / 2, true);
-    paddleScreenIsOn = true;
 };
 
 var drawReadMe = function() {
@@ -401,15 +405,6 @@ var cancelAnimation = function() {
     requestId = undefined;
 };
 
-var initPaddles = function () {
-    if (numberOfPaddles == 1) {
-        paddle.x = canvas.width / 2 - paddle.width / 2;
-    } else if (numberOfPaddles == 2) {
-        twoPaddles[0].x = 0;
-        twoPaddles[1].x = canvas.width / 2;
-    }
-};
-
 var getTimeRemaining = function(endtime){
     var t = Date.parse(endtime) - Date.now();
     var seconds = Math.floor( (t/1000) % 60 );
@@ -421,11 +416,48 @@ var getTimeRemaining = function(endtime){
     };
 };
 
-var setTimer = function() {
-    deadline = new Date(Date.now() + timeForLevel + timeToDisplayLevelNumber);
+/* ---------- INIT ---------- */
+
+var initGame = function() {
+    currentLevel = 0;
+    gameIsOn = true;
+    drawPaddleChoice();
+    paddleScreenIsOn = true; // game continues when a user chooses number of paddles (keyDownHandler())
+    // when 1 or 2 pressed, initLevel() is called
 };
 
-/* ---------- INIT ---------- */
+var initLevel = function() {
+    if (currentLevel < numberOfLevels) {
+        resetVariables();
+        initPaddlesPositions();
+        bricksInit();
+        drawCurrentLevelNumber();
+        setTimer();
+        setTimeout(function() {drawAllGameObjects();},
+            timeToDisplayLevelNumber); // delay game start to display current level
+    } else {
+        drawCongrats();
+    }
+};
+
+var resetVariables = function() {
+    score = 0;
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height - ball.radius * 6;
+    ball.xSpeed = 3;
+    ball.ySpeed = -3;
+    requestId = 0;
+    deadline = {};
+};
+
+var initPaddlesPositions = function () {
+    if (numberOfPaddles == 1) {
+        paddle.x = canvas.width / 2 - paddle.width / 2;
+    } else if (numberOfPaddles == 2) {
+        twoPaddles[0].x = 0;
+        twoPaddles[1].x = canvas.width / 2;
+    }
+};
 
 var bricksInit = function() {
     for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
@@ -434,31 +466,8 @@ var bricksInit = function() {
             currentUnhitBricks[i][j] = {x: 0, y: 0, wasHit: bricksPatterns[currentLevel].pattern[i][j]};
         }
     }
-}
-
-var init = function() {
-    document.addEventListener("keydown", keyDownHandler, false);
-    document.addEventListener("keyup", keyUpHandler, false);
-    document.addEventListener("mousemove", mousemoveHandler, false);
-    currentLevel = 0;
-    gameIsOn = true;
-    drawPaddleChoice();
-    // game continues when a user chooses number of paddles (keyDownHandler())
 };
 
-var initLevel = function() {
-    if (currentLevel < 6) {
-        score = 0;
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height - ball.radius * 6;
-        ball.xSpeed = 3;
-        ball.ySpeed = -3;
-        initPaddles();
-        bricksInit();
-        drawLevel();
-        setTimer();
-        setTimeout(function() {draw();}, timeToDisplayLevelNumber); // delay game start to display current level
-    } else {
-        drawCongrats();
-    }
+var setTimer = function() {
+    deadline = new Date(Date.now() + timeForLevel + timeToDisplayLevelNumber);
 };
