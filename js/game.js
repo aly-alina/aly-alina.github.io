@@ -356,34 +356,6 @@ var drawText = function(font, style, text, x, y, middle) {
     } else {
         canvasCtx.fillText(text, x, y);
     }
-}
-
-var detectBricksCollision = function() {
-    for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
-        for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
-            var thisBrick = currentUnhitBricks[i][j];
-            if (!thisBrick.wasHit) {
-                if (ball.x > thisBrick.x
-                        && ball.x < thisBrick.x + commonBricksProperties.width
-                        && ball.y > thisBrick.y
-                        && ball.y < thisBrick.y + commonBricksProperties.height) {
-                    ball.ySpeed = -ball.ySpeed;
-                    thisBrick.wasHit = true;
-                    score++;
-                    if (score >= bricksPatterns[currentLevel].numberOfBricks) {
-                        advanceLevel();
-                    }
-                }
-            }
-        }
-    }
-};
-
-var advanceLevel = function() {
-    cancelAnimation();
-    currentLevel++;
-    score = 0;
-    initLevel();
 };
 
 var drawRectangle = function(x, y, width, height, color) {
@@ -392,17 +364,6 @@ var drawRectangle = function(x, y, width, height, color) {
     canvasCtx.fillStyle = color;
     canvasCtx.fill();
     canvasCtx.closePath();
-};
-
-var finishTheGame = function () {
-    cancelAnimation();
-    drawLose();
-    gameIsOn = false;
-};
-
-var cancelAnimation = function() {
-    window.cancelAnimationFrame(requestId);
-    requestId = undefined;
 };
 
 var getTimeRemaining = function(endtime){
@@ -422,6 +383,47 @@ var checkIfMouseInsideCanvas = function(relativeX) {
 
 var followTheMouse = function(relativeX, width) {
     return relativeX - width / 2;
+};
+
+/* ----------- CONTROL ---------- */
+
+var detectBricksCollision = function() {
+    for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
+        for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
+            var thisBrick = currentUnhitBricks[i][j];
+            if (!thisBrick.wasHit) {
+                if (ball.x > thisBrick.x
+                    && ball.x < thisBrick.x + commonBricksProperties.width
+                    && ball.y > thisBrick.y
+                    && ball.y < thisBrick.y + commonBricksProperties.height) {
+                    ball.ySpeed = -ball.ySpeed;
+                    thisBrick.wasHit = true;
+                    score++;
+                    if (score >= bricksPatterns[currentLevel].numberOfBricks) {
+                        advanceLevel();
+                    }
+                }
+            }
+        }
+    }
+};
+
+var advanceLevel = function() {
+    cancelAnimation();
+    currentLevel++;
+    score = 0;
+    initLevel();
+};
+
+var finishTheGame = function () {
+    cancelAnimation();
+    drawLose();
+    gameIsOn = false;
+};
+
+var cancelAnimation = function() {
+    window.cancelAnimationFrame(requestId);
+    requestId = undefined;
 };
 
 /* ---------- INIT ---------- */
