@@ -128,6 +128,12 @@ var start = function(e) {
     init();
 };
 
+var reset = function(e) {
+    window.cancelAnimationFrame(requestId);
+    requestId = undefined;
+    init();
+};
+
 /* ------------ DRAW FUNCTIONS ----------- */
 
 var draw = function() {
@@ -280,6 +286,7 @@ var init = function() {
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mousemoveHandler, false);
+    level = 0;
     setTimeout(initLevel, 500); // let the font load
 };
 
