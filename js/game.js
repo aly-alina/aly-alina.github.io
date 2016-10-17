@@ -119,7 +119,9 @@ var level = 0;
 var paddleIsBeingChosen = false;
 var numberOfPaddles = 1;
 var requestId;
-var timeForLevel = 60000;
+var timeForLevel = 120000;
+var timeToDisplayLevelNumber = 3000;
+var deadline;
 
 /* ----------- EVENT HANDLERS ----------- */
 
@@ -170,6 +172,7 @@ var draw = function() {
     drawBricks();
     drawPaddle();
     drawScore();
+    drawTimer();
     drawBall();
     detectBricksCollision();
 };
@@ -255,7 +258,23 @@ var drawBricks = function() {
 
 var drawScore = function() {
     drawText("16px 'northregular'", "#fff", "Score: " + score, 8, 20, false);
-}
+};
+
+var drawTimer = function() {
+    var remainingTime = getTimeRemaining(deadline);
+    if (remainingTime.total > 0) {
+        drawText(
+            "16px 'northregular'",
+            "#fff",
+            remainingTime.minutes + ":" + remainingTime.seconds,
+            canvas.width - 50,
+            20,
+            false
+        );
+    } else {
+        finishTheGame();
+    }
+};
 
 var drawLevel = function () {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
@@ -345,11 +364,17 @@ var initPaddles = function () {
     }
 };
 
-var setLevelTimer = function(levelToCheck) {
-    if (level == levelToCheck && score < bricksLevelFeaturesArray[levelToCheck].numberOfBricks)
-        finishTheGame();
-    console.log("time is expired");
+var getTimeRemaining = function(endtime){
+    var t = Date.parse(endtime) - Date.now();
+    var seconds = Math.floor( (t/1000) % 60 );
+    var minutes = Math.floor( (t/1000/60) % 60 );
+    return {
+        'total': t,
+        'minutes': minutes,
+        'seconds': seconds
+    };
 };
+
 
 /* ---------- INIT ---------- */
 
@@ -379,8 +404,8 @@ var initLevel = function() {
         initPaddles();
         bricksInit();
         drawLevel();
-        setTimeout(function() {draw();}, 3000); // let see the level before game starts
-        setTimeout(function() {setLevelTimer(level);}, timeForLevel + 3000);
+        setTimeout(function() {draw();}, timeToDisplayLevelNumber); // let see the level before game starts
+        deadline = new Date(Date.now() + timeForLevel + timeToDisplayLevelNumber);
     } else {
         drawCongrats();
     }
