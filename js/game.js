@@ -119,6 +119,7 @@ var level = 0;
 var paddleIsBeingChosen = false;
 var numberOfPaddles = 1;
 var requestId;
+var timeForLevel = 60000;
 
 /* ----------- EVENT HANDLERS ----------- */
 
@@ -344,6 +345,12 @@ var initPaddles = function () {
     }
 };
 
+var setLevelTimer = function(levelToCheck) {
+    if (level == levelToCheck && score < bricksLevelFeaturesArray[levelToCheck].numberOfBricks)
+        finishTheGame();
+    console.log("time is expired");
+};
+
 /* ---------- INIT ---------- */
 
 var bricksInit = function() {
@@ -372,7 +379,8 @@ var initLevel = function() {
         initPaddles();
         bricksInit();
         drawLevel();
-        setTimeout(draw, 3000); // let see the level before game starts
+        setTimeout(function() {draw();}, 3000); // let see the level before game starts
+        setTimeout(function() {setLevelTimer(level);}, timeForLevel + 3000);
     } else {
         drawCongrats();
     }
