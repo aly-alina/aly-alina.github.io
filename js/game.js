@@ -36,10 +36,10 @@ var twoPaddles = [
     }
 ];
 
-var bricksLevelFeaturesArray = [
+var bricksPatterns = [
     {
         numberOfBricks: 40,
-        bricksPattern: [
+        pattern: [
             [false, false, false, false, false, false, false, false, false, false],
             [false, false, false, false, false, false, false, false, false, false],
             [false, false, false, false, false, false, false, false, false, false],
@@ -48,7 +48,7 @@ var bricksLevelFeaturesArray = [
     },
     {
         numberOfBricks: 32,
-        bricksPattern: [
+        pattern: [
             [false, false, true, false, false, false, false, true, false, false],
             [false, false, false, true, false, false, true, false, false, false],
             [false, false, false, true, false, false, true, false, false, false],
@@ -57,7 +57,7 @@ var bricksLevelFeaturesArray = [
     },
     {
         numberOfBricks: 35,
-        bricksPattern: [
+        pattern: [
             [true, false, true, false, true, false, true, false, true, false],
             [false, true, false, true, false, true, false, true, false, true],
             [true, false, true, false, true, false, true, false, true, false],
@@ -69,7 +69,7 @@ var bricksLevelFeaturesArray = [
     },
     {
         numberOfBricks: 38,
-        bricksPattern: [
+        pattern: [
             [false, false, true, false, false, false, true, false, false, false],
             [true, false, true, false, true, false, true, false, true, false],
             [true, false, false, false, true, false, false, false, true, false],
@@ -80,7 +80,7 @@ var bricksLevelFeaturesArray = [
     },
     {
         numberOfBricks: 32,
-        bricksPattern: [
+        pattern: [
             [false, false, false, false, false, false, false, false, true, true],
             [false, false, false, false, false, false, true, true, false, false],
             [false, false, false, false, true, true, false, false, false, false],
@@ -89,7 +89,7 @@ var bricksLevelFeaturesArray = [
     },
     {
         numberOfBricks: 32,
-        bricksPattern: [
+        pattern: [
             [true, false, false, false, false, false, false, false, false, true],
             [false, false, false, false, true, true, false, false, false, false],
             [true, false, false, false, false, false, false, false, false, true],
@@ -98,7 +98,7 @@ var bricksLevelFeaturesArray = [
     }
 ];
 
-var bricksProperties = {
+var commonBricksProperties = {
     offsetTop: 40,
     offsetLeft: 30,
     width: 45,
@@ -107,30 +107,30 @@ var bricksProperties = {
     color: "#6796a3"
 };
 
-var bricks = [];
+var currentUnhitBricks = [];
 
-var keys = {
+var keyboardKeys = {
     rightPressed: false,
     leftPressed: false
 };
 
 var score = 0;
-var level = 0;
-var paddleScreenIsOn = false;
+var currentLevel = 0;
+var requestId = 0; // used in requestAnimationFrame (function draw())
+var timeForLevel = 120000; // time given to finish the level otherwise, lose
+var deadline = {}; // Date object to store when the level's timer is up
+var timeToDisplayLevelNumber = 3000; // delay before the game starts to show current level on the screen
 var numberOfPaddles = 1;
-var requestId;
-var timeForLevel = 120000;
-var timeToDisplayLevelNumber = 3000;
-var deadline;
-var gameIsOn = false;
+var paddleScreenIsOn = false; // screen offering to choose number of paddles before the game starts
+var gameIsOn = false; // true if the actual game is in progress
 
 /* ----------- EVENT HANDLERS ----------- */
 
 var keyDownHandler = function(e) {
     if (e.keyCode == 39)
-        keys.rightPressed = true;
+        keyboardKeys.rightPressed = true;
     else if (e.keyCode == 37)
-        keys.leftPressed = true;
+        keyboardKeys.leftPressed = true;
     else if (paddleScreenIsOn) {
         if (e.keyCode == 49)
             numberOfPaddles = 1;
@@ -142,9 +142,9 @@ var keyDownHandler = function(e) {
 
 var keyUpHandler = function(e) {
     if (e.keyCode == 39)
-        keys.rightPressed = false;
+        keyboardKeys.rightPressed = false;
     else if (e.keyCode == 37)
-        keys.leftPressed = false;
+        keyboardKeys.leftPressed = false;
     else if (e.keyCode == 49 || e.keyCode == 50) // 1 or 2
         paddleScreenIsOn = false;
 };
@@ -195,9 +195,9 @@ var draw = function() {
 var drawPaddle = function() {
     if (numberOfPaddles == 1) {
         drawRectangle(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height, paddle.color);
-        if (keys.rightPressed && paddle.x + paddle.width < canvas.width)
+        if (keyboardKeys.rightPressed && paddle.x + paddle.width < canvas.width)
             paddle.x += paddle.speed;
-        if (keys.leftPressed && paddle.x > 0)
+        if (keyboardKeys.leftPressed && paddle.x > 0)
             paddle.x -= paddle.speed;
     } else if (numberOfPaddles == 2) {
         for (var i = 0; i < twoPaddles.length; i++) {
@@ -207,13 +207,13 @@ var drawPaddle = function() {
                 twoPaddles[i].height,
                 twoPaddles[i].color);
         }
-        if (keys.rightPressed) {
+        if (keyboardKeys.rightPressed) {
             if (twoPaddles[0].x < canvas.width / 2 - twoPaddles[0].width)
                 twoPaddles[0].x += twoPaddles[0].speed;
             if (twoPaddles[1].x < canvas.width - twoPaddles[1].width)
                 twoPaddles[1].x += twoPaddles[1].speed;
         }
-        if (keys.leftPressed) {
+        if (keyboardKeys.leftPressed) {
             if (twoPaddles[0].x > 0)
                 twoPaddles[0].x -= twoPaddles[0].speed;
             if (twoPaddles[1].x > canvas.width / 2)
@@ -254,18 +254,18 @@ var drawLose = function () {
 };
 
 var drawBricks = function() {
-    for (var i = 0; i < bricksLevelFeaturesArray[level].bricksPattern.length; i++) {
-        for (var j = 0; j < bricksLevelFeaturesArray[level].bricksPattern[i].length; j++) {
-            if (!bricks[i][j].wasHit) {
-                var brickX = (bricksProperties.width + bricksProperties.padding) * j
-                    + bricksProperties.offsetLeft;
-                var brickY = (bricksProperties.height + bricksProperties.padding) * i
-                    + bricksProperties.offsetTop;
-                bricks[i][j] = {x: brickX, y: brickY, wasHit: false};
-                drawRectangle(bricks[i][j].x, bricks[i][j].y,
-                    bricksProperties.width,
-                    bricksProperties.height,
-                    bricksProperties.color);
+    for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
+        for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
+            if (!currentUnhitBricks[i][j].wasHit) {
+                var brickX = (commonBricksProperties.width + commonBricksProperties.padding) * j
+                    + commonBricksProperties.offsetLeft;
+                var brickY = (commonBricksProperties.height + commonBricksProperties.padding) * i
+                    + commonBricksProperties.offsetTop;
+                currentUnhitBricks[i][j] = {x: brickX, y: brickY, wasHit: false};
+                drawRectangle(currentUnhitBricks[i][j].x, currentUnhitBricks[i][j].y,
+                    commonBricksProperties.width,
+                    commonBricksProperties.height,
+                    commonBricksProperties.color);
             }
         }
     }
@@ -293,7 +293,7 @@ var drawTimer = function() {
 
 var drawLevel = function () {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    drawText("30px northregular", "#fff", "Level " + (level + 1), 0, canvas.height / 2, true);
+    drawText("30px northregular", "#fff", "Level " + (currentLevel + 1), 0, canvas.height / 2, true);
 };
 
 var drawCongrats = function() {
@@ -309,8 +309,8 @@ var drawPaddleChoice = function() {
 
 var drawReadMe = function() {
     var text = "Move the paddle to the left or to the right so the ball does not touch the floor. The paddle(s)" +
-        " movement is controlled with <- and -> keys or with the mouse. The final goal" +
-        " is to break all the bricks above before the time is up. You can choose to play with one paddle or with " +
+        " movement is controlled with <- and -> keyboardKeys or with the mouse. The final goal" +
+        " is to break all the currentUnhitBricks above before the time is up. You can choose to play with one paddle or with " +
         "two of them. Press \"Reset\" if the game is in progress and you want to start again. The game has 6 levels.";
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     canvasCtx.font = "18px 'northregular'";
@@ -355,18 +355,18 @@ var drawText = function(font, style, text, x, y, middle) {
 }
 
 var detectBricksCollision = function() {
-    for (var i = 0; i < bricksLevelFeaturesArray[level].bricksPattern.length; i++) {
-        for (var j = 0; j < bricksLevelFeaturesArray[level].bricksPattern[i].length; j++) {
-            var thisBrick = bricks[i][j];
+    for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
+        for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
+            var thisBrick = currentUnhitBricks[i][j];
             if (!thisBrick.wasHit) {
                 if (ball.x > thisBrick.x
-                        && ball.x < thisBrick.x + bricksProperties.width
+                        && ball.x < thisBrick.x + commonBricksProperties.width
                         && ball.y > thisBrick.y
-                        && ball.y < thisBrick.y + bricksProperties.height) {
+                        && ball.y < thisBrick.y + commonBricksProperties.height) {
                     ball.ySpeed = -ball.ySpeed;
                     thisBrick.wasHit = true;
                     score++;
-                    if (score >= bricksLevelFeaturesArray[level].numberOfBricks) {
+                    if (score >= bricksPatterns[currentLevel].numberOfBricks) {
                         advanceLevel();
                     }
                 }
@@ -377,7 +377,7 @@ var detectBricksCollision = function() {
 
 var advanceLevel = function() {
     cancelAnimation();
-    level++;
+    currentLevel++;
     score = 0;
     initLevel();
 };
@@ -421,14 +421,17 @@ var getTimeRemaining = function(endtime){
     };
 };
 
+var setTimer = function() {
+    deadline = new Date(Date.now() + timeForLevel + timeToDisplayLevelNumber);
+};
 
 /* ---------- INIT ---------- */
 
 var bricksInit = function() {
-    for (var i = 0; i < bricksLevelFeaturesArray[level].bricksPattern.length; i++) {
-        bricks[i] = [];
-        for (var j = 0; j < bricksLevelFeaturesArray[level].bricksPattern[i].length; j++) {
-            bricks[i][j] = {x: 0, y: 0, wasHit: bricksLevelFeaturesArray[level].bricksPattern[i][j]};
+    for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
+        currentUnhitBricks[i] = [];
+        for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
+            currentUnhitBricks[i][j] = {x: 0, y: 0, wasHit: bricksPatterns[currentLevel].pattern[i][j]};
         }
     }
 }
@@ -437,14 +440,14 @@ var init = function() {
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mousemoveHandler, false);
-    level = 0;
+    currentLevel = 0;
     gameIsOn = true;
     drawPaddleChoice();
     // game continues when a user chooses number of paddles (keyDownHandler())
 };
 
 var initLevel = function() {
-    if (level < 6) {
+    if (currentLevel < 6) {
         score = 0;
         ball.x = canvas.width / 2;
         ball.y = canvas.height - ball.radius * 6;
@@ -453,8 +456,8 @@ var initLevel = function() {
         initPaddles();
         bricksInit();
         drawLevel();
-        setTimeout(function() {draw();}, timeToDisplayLevelNumber); // let see the level before game starts
-        deadline = new Date(Date.now() + timeForLevel + timeToDisplayLevelNumber);
+        setTimer();
+        setTimeout(function() {draw();}, timeToDisplayLevelNumber); // delay game start to display current level
     } else {
         drawCongrats();
     }
