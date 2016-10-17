@@ -20,12 +20,23 @@ body {
     color: white;
 }
 
+.button {
+    margin: 1.5%;
+    padding: 0.5%;
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    width: 10%;
+    height: 5%;
+    border: solid 2px #fff;
+}
+
 h1 {
     padding: 2% 20%;
 }
 
 #gameCanvas {
     display: block;
-    margin: 2% auto;
+    margin: 0 auto;
     background-color: #111;
 }

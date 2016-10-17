@@ -122,7 +122,11 @@ var mousemoveHandler = function(e) {
     if (relativeX > 0 && relativeX < canvas.width) {
         paddle.x = relativeX - paddle.width / 2;
     }
-}
+};
+
+var start = function(e) {
+    init();
+};
 
 /* ------------ DRAW FUNCTIONS ----------- */
 
@@ -292,5 +296,3 @@ var initLevel = function() {
         drawCongrats();
     }
 };
-
-window.onload = init();
