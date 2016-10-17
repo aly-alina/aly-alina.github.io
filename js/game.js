@@ -129,8 +129,7 @@ var start = function(e) {
 };
 
 var reset = function(e) {
-    window.cancelAnimationFrame(requestId);
-    requestId = undefined;
+    cancelAnimation();
     init();
 };
 
@@ -240,7 +239,7 @@ var detectBricksCollision = function() {
                     ball.ySpeed = -ball.ySpeed;
                     thisBrick.wasHit = true;
                     score++;
-                    if (score == bricksLevelFeaturesArray[level].numberOfBricks) {
+                    if (score >= bricksLevelFeaturesArray[level].numberOfBricks) {
                         advanceLevel();
                     }
                 }
@@ -250,11 +249,10 @@ var detectBricksCollision = function() {
 };
 
 var advanceLevel = function() {
-    window.cancelAnimationFrame(requestId);
+    cancelAnimation();
     level++;
     score = 0;
-    requestId = undefined;
-    initLevel()
+    initLevel();
 };
 
 var drawRectangle = function(x, y, width, height, color) {
@@ -266,10 +264,14 @@ var drawRectangle = function(x, y, width, height, color) {
 };
 
 var finishTheGame = function () {
-    window.cancelAnimationFrame(requestId);
-    requestId = undefined;
+    cancelAnimation();
     drawLose();
 }
+
+var cancelAnimation = function() {
+    window.cancelAnimationFrame(requestId);
+    requestId = undefined;
+};
 
 /* ---------- INIT ---------- */
 
