@@ -150,8 +150,16 @@ var keyUpHandler = function(e) {
 
 var mousemoveHandler = function(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
-    if (relativeX > 0 && relativeX < canvas.width) {
-        paddle.x = relativeX - paddle.width / 2;
+    if (numberOfPaddles == 1) {
+        if (relativeX > 0 && relativeX < canvas.width) {
+            paddle.x = relativeX - paddle.width / 2;
+        }
+    } else if(numberOfPaddles == 2) {
+        if (relativeX > 0 && relativeX < canvas.width) {
+            relativeX /= 2;
+            twoPaddles[0].x = relativeX - twoPaddles[0].width / 2;
+            twoPaddles[1].x = canvas.width / 2 + (relativeX - twoPaddles[1].width / 2);
+        }
     }
 };
 
