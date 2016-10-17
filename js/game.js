@@ -116,12 +116,13 @@ var keys = {
 
 var score = 0;
 var level = 0;
-var paddleIsBeingChosen = false;
+var paddleScreenIsOn = false;
 var numberOfPaddles = 1;
 var requestId;
 var timeForLevel = 120000;
 var timeToDisplayLevelNumber = 3000;
 var deadline;
+var gameIsOn = false;
 
 /* ----------- EVENT HANDLERS ----------- */
 
@@ -130,7 +131,7 @@ var keyDownHandler = function(e) {
         keys.rightPressed = true;
     else if (e.keyCode == 37)
         keys.leftPressed = true;
-    else if (paddleIsBeingChosen) {
+    else if (paddleScreenIsOn) {
         if (e.keyCode == 49)
             numberOfPaddles = 1;
         else if (e.keyCode == 50)
@@ -145,7 +146,7 @@ var keyUpHandler = function(e) {
     else if (e.keyCode == 37)
         keys.leftPressed = false;
     else if (e.keyCode == 49 || e.keyCode == 50) // 1 or 2
-        paddleIsBeingChosen = false;
+        paddleScreenIsOn = false;
 };
 
 var mousemoveHandler = function(e) {
@@ -170,6 +171,12 @@ var start = function(e) {
 var reset = function(e) {
     cancelAnimation();
     init();
+};
+
+var readme = function(e) {
+    if (!gameIsOn) {
+        drawReadMe();
+    }
 };
 
 /* ------------ DRAW FUNCTIONS ----------- */
@@ -297,10 +304,40 @@ var drawCongrats = function() {
 var drawPaddleChoice = function() {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawText("18px 'northregular'", "#fff", 'To have 1 paddle press "1", to have 2 - "2"', 0, canvas.height / 2, true);
-    paddleIsBeingChosen = true;
+    paddleScreenIsOn = true;
+};
+
+var drawReadMe = function() {
+    var text = "Move the paddle to the left or to the right so the ball does not touch the floor. The paddle(s)" +
+        " movement is controlled with <- and -> keys or with the mouse. The final goal" +
+        " is to break all the bricks above before the time is up. You can choose to play with one paddle or with " +
+        "two of them. Press \"Reset\" if the game is in progress and you want to start again. The game has 6 levels.";
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    canvasCtx.font = "18px 'northregular'";
+    canvasCtx.fillStyle = '#fff';
+    wrapText(text, 8, 40, canvas.width - 8, 30);
 };
 
 /* ---------- COMMON FUNCTIONS --------- */
+
+var wrapText = function(text, x, y, maxWidth, lineHeight) {
+    var words = text.split(' ');
+    var line = '';
+    for(var n = 0; n < words.length; n++) {
+        var testLine = line + words[n] + ' ';
+        var metrics = canvasCtx.measureText(testLine);
+        var testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+            canvasCtx.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+        }
+        else {
+            line = testLine;
+        }
+    }
+    canvasCtx.fillText(line, x, y);
+};
 
 var checkIfHitsOnePaddle = function(thisPaddleX, thisPaddleWidth) {
     return ball.x > thisPaddleX - ball.radius
@@ -356,6 +393,7 @@ var drawRectangle = function(x, y, width, height, color) {
 var finishTheGame = function () {
     cancelAnimation();
     drawLose();
+    gameIsOn = false;
 };
 
 var cancelAnimation = function() {
@@ -400,6 +438,7 @@ var init = function() {
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mousemoveHandler, false);
     level = 0;
+    gameIsOn = true;
     drawPaddleChoice();
     // game continues when a user chooses number of paddles (keyDownHandler())
 };
@@ -408,7 +447,9 @@ var initLevel = function() {
     if (level < 6) {
         score = 0;
         ball.x = canvas.width / 2;
-        ball.y = canvas.height - ball.radius * 3;
+        ball.y = canvas.height - ball.radius * 6;
+        ball.xSpeed = 3;
+        ball.ySpeed = -3;
         initPaddles();
         bricksInit();
         drawLevel();
