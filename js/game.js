@@ -146,21 +146,21 @@ var keyUpHandler = function(e) {
         keyboardKeys.rightPressed = false;
     else if (e.keyCode == 37)
         keyboardKeys.leftPressed = false;
-    else if (e.keyCode == 49 || e.keyCode == 50) // 1 or 2
+    else if (paddleScreenIsOn && (e.keyCode == 49 || e.keyCode == 50)) // 1 or 2
         paddleScreenIsOn = false;
 };
 
 var mousemoveHandler = function(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
     if (numberOfPaddles == 1) {
-        if (relativeX > 0 && relativeX < canvas.width) {
-            paddle.x = relativeX - paddle.width / 2;
+        if (checkIfMouseInsideCanvas(relativeX)) {
+            paddle.x = followTheMouse(relativeX, paddle.width);
         }
     } else if(numberOfPaddles == 2) {
-        if (relativeX > 0 && relativeX < canvas.width) {
+        if (checkIfMouseInsideCanvas(relativeX)) {
             relativeX /= 2;
-            twoPaddles[0].x = relativeX - twoPaddles[0].width / 2;
-            twoPaddles[1].x = canvas.width / 2 + (relativeX - twoPaddles[1].width / 2);
+            twoPaddles[0].x = followTheMouse(relativeX, twoPaddles[0].width);
+            twoPaddles[1].x = canvas.width / 2 + followTheMouse(relativeX, twoPaddles[1].width);
         }
     }
 };
@@ -414,6 +414,14 @@ var getTimeRemaining = function(endtime){
         'minutes': minutes,
         'seconds': seconds
     };
+};
+
+var checkIfMouseInsideCanvas = function(relativeX) {
+    return relativeX > 0 && relativeX < canvas.width;
+};
+
+var followTheMouse = function(relativeX, width) {
+    return relativeX - width / 2;
 };
 
 /* ---------- INIT ---------- */
