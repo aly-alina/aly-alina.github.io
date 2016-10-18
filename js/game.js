@@ -354,8 +354,6 @@ var drawReadMe = function() {
     drawOnEmptyScreen("18px 'northregular'", '#fff', text, 8, 40, false, true);
 };
 
-/* ---------- COMMON FUNCTIONS --------- */
-
 var drawOnEmptyScreen = function(font, style, text, x, y, drawInTheMiddle, wrapNeeded) {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawText(font, style, text, x, y, drawInTheMiddle, wrapNeeded);
@@ -367,13 +365,13 @@ var drawText = function(font, style, text, x, y, drawInTheMiddle, wrapIsNeeded) 
     if (drawInTheMiddle) {
         canvasCtx.fillText(text, (canvas.width / 2) - (canvasCtx.measureText(text).width / 2), y);
     } else if(wrapIsNeeded) {
-        wrapText(text, x, y, canvas.width - x, 30);
+        drawWrappedText(text, x, y, canvas.width - x, 30);
     } else {
         canvasCtx.fillText(text, x, y);
     }
 };
 
-var wrapText = function(text, x, y, maxWidth, lineHeight) {
+var drawWrappedText = function(text, x, y, maxWidth, lineHeight) {
     var words = text.split(' ');
     var line = '';
     for(var n = 0; n < words.length; n++) {
@@ -392,11 +390,6 @@ var wrapText = function(text, x, y, maxWidth, lineHeight) {
     canvasCtx.fillText(line, x, y);
 };
 
-var checkIfHitsOnePaddle = function(thisPaddleX, thisPaddleWidth) {
-    return ball.x > thisPaddleX - ball.radius
-        && ball.x < thisPaddleX + thisPaddleWidth + ball.radius;
-};
-
 var drawRectangle = function(x, y, width, height, color) {
     canvasCtx.beginPath();
     canvasCtx.rect(x, y, width, height);
@@ -405,12 +398,19 @@ var drawRectangle = function(x, y, width, height, color) {
     canvasCtx.closePath();
 };
 
+/* ---------- COMMON FUNCTIONS --------- */
+
+var checkIfHitsOnePaddle = function(thisPaddleX, thisPaddleWidth) {
+    return ball.x > thisPaddleX - ball.radius
+        && ball.x < thisPaddleX + thisPaddleWidth + ball.radius;
+};
+
 var getTimeRemaining = function(endtime){
-    var t = Date.parse(endtime) - Date.now();
-    var seconds = Math.floor( (t/1000) % 60 );
-    var minutes = Math.floor( (t/1000/60) % 60 );
+    var totalRemainingTime = Date.parse(endtime) - Date.now();
+    var seconds = Math.floor( (totalRemainingTime/1000) % 60 );
+    var minutes = Math.floor( (totalRemainingTime/1000/60) % 60 );
     return {
-        'total': t,
+        'total': totalRemainingTime,
         'minutes': minutes,
         'seconds': seconds
     };
@@ -460,7 +460,7 @@ var initLevel = function() {
         initPaddlesPositions();
         bricksInit();
         drawCurrentLevelNumber();
-        setTimer();
+        setTimer(); // lose if all bricks are not hit inside this timeslot
         setTimeout(function() {drawAllGameObjects();},
             timeToDisplayLevelNumber); // delay game start to display current level
     } else {
