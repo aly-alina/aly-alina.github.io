@@ -184,7 +184,7 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mousemoveHandler, false);
 
-/* ------------ DRAW FUNCTIONS ----------- */
+/* ------------ MAIN DRAW FUNCTIONS ----------- */
 
 var drawAllGameObjects = function() {
     requestId = window.requestAnimationFrame(drawAllGameObjects);
@@ -192,9 +192,32 @@ var drawAllGameObjects = function() {
     drawBricks();
     drawPaddle();
     drawScore();
-    drawTimer();
-    drawBall();
-    detectBricksCollision();
+    var timeIsOut = drawTimer();
+    var ballHitsFloor = drawBall();
+    var levelIsAccomplished = detectBricksCollision();
+    if (timeIsOut || ballHitsFloor) {
+        finishTheGame();
+    } else if (levelIsAccomplished) {
+        advanceLevel();
+    }
+};
+
+var drawBricks = function() {
+    for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
+        for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
+            if (!currentUnhitBricks[i][j].wasHit) {
+                var brickX = (commonBricksProperties.width + commonBricksProperties.padding) * j
+                    + commonBricksProperties.offsetLeft;
+                var brickY = (commonBricksProperties.height + commonBricksProperties.padding) * i
+                    + commonBricksProperties.offsetTop;
+                currentUnhitBricks[i][j] = {x: brickX, y: brickY, wasHit: false};
+                drawRectangle(currentUnhitBricks[i][j].x, currentUnhitBricks[i][j].y,
+                    commonBricksProperties.width,
+                    commonBricksProperties.height,
+                    commonBricksProperties.color);
+            }
+        }
+    }
 };
 
 var drawPaddle = function() {
@@ -227,6 +250,27 @@ var drawPaddle = function() {
     }
 };
 
+var drawScore = function() {
+    drawText("16px 'northregular'", "#fff", "Score: " + score, 8, 20, false);
+};
+
+var drawTimer = function() {
+    var remainingTime = getTimeRemaining(deadline);
+    if (remainingTime.total > 0) {
+        drawText(
+            "16px 'northregular'",
+            "#fff",
+            remainingTime.minutes + ":" + remainingTime.seconds,
+            canvas.width - 50,
+            20,
+            false
+        );
+    } else {
+        return true;
+    }
+    return false;
+};
+
 var drawBall = function() {
     canvasCtx.beginPath();
     canvasCtx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
@@ -245,55 +289,43 @@ var drawBall = function() {
                 || checkIfHitsOnePaddle(twoPaddles[1].x, twoPaddles[1].width))) { //if hits paddle(s)
             ball.ySpeed = -ball.ySpeed;
         } else {
-            finishTheGame();
+            return true;
         }
     }
     
     ball.x += ball.xSpeed;
     ball.y += ball.ySpeed;
+
+    return false;
 };
+
+var detectBricksCollision = function() {
+    for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
+        for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
+            var thisBrick = currentUnhitBricks[i][j];
+            if (!thisBrick.wasHit) {
+                if (ball.x > thisBrick.x
+                    && ball.x < thisBrick.x + commonBricksProperties.width
+                    && ball.y > thisBrick.y
+                    && ball.y < thisBrick.y + commonBricksProperties.height) {
+                    ball.ySpeed = -ball.ySpeed;
+                    thisBrick.wasHit = true;
+                    score++;
+                    if (score >= bricksPatterns[currentLevel].numberOfBricks) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+};
+
+/* ---------- OTHER DRAW FUNCTIONS ------------- */
 
 var drawLose = function () {
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawText("25px 'northregular'", "#fff", "Game is over", 0, canvas.height / 2, true);
-};
-
-var drawBricks = function() {
-    for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
-        for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
-            if (!currentUnhitBricks[i][j].wasHit) {
-                var brickX = (commonBricksProperties.width + commonBricksProperties.padding) * j
-                    + commonBricksProperties.offsetLeft;
-                var brickY = (commonBricksProperties.height + commonBricksProperties.padding) * i
-                    + commonBricksProperties.offsetTop;
-                currentUnhitBricks[i][j] = {x: brickX, y: brickY, wasHit: false};
-                drawRectangle(currentUnhitBricks[i][j].x, currentUnhitBricks[i][j].y,
-                    commonBricksProperties.width,
-                    commonBricksProperties.height,
-                    commonBricksProperties.color);
-            }
-        }
-    }
-};
-
-var drawScore = function() {
-    drawText("16px 'northregular'", "#fff", "Score: " + score, 8, 20, false);
-};
-
-var drawTimer = function() {
-    var remainingTime = getTimeRemaining(deadline);
-    if (remainingTime.total > 0) {
-        drawText(
-            "16px 'northregular'",
-            "#fff",
-            remainingTime.minutes + ":" + remainingTime.seconds,
-            canvas.width - 50,
-            20,
-            false
-        );
-    } else {
-        finishTheGame();
-    }
 };
 
 var drawCurrentLevelNumber = function () {
@@ -386,27 +418,6 @@ var followTheMouse = function(relativeX, width) {
 };
 
 /* ----------- CONTROL ---------- */
-
-var detectBricksCollision = function() {
-    for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
-        for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
-            var thisBrick = currentUnhitBricks[i][j];
-            if (!thisBrick.wasHit) {
-                if (ball.x > thisBrick.x
-                    && ball.x < thisBrick.x + commonBricksProperties.width
-                    && ball.y > thisBrick.y
-                    && ball.y < thisBrick.y + commonBricksProperties.height) {
-                    ball.ySpeed = -ball.ySpeed;
-                    thisBrick.wasHit = true;
-                    score++;
-                    if (score >= bricksPatterns[currentLevel].numberOfBricks) {
-                        advanceLevel();
-                    }
-                }
-            }
-        }
-    }
-};
 
 var advanceLevel = function() {
     cancelAnimation();
