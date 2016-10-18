@@ -248,7 +248,7 @@ var drawPaddle = function() {
 };
 
 var drawScore = function() {
-    drawText("16px 'northregular'", "#fff", "Score: " + score, 8, 20, false);
+    drawText("16px 'northregular'", "#fff", "Score: " + score, 8, 20, false, false);
 };
 
 var drawTimer = function() {
@@ -260,6 +260,7 @@ var drawTimer = function() {
             remainingTime.minutes + ":" + remainingTime.seconds,
             canvas.width - 50,
             20,
+            false,
             false
         );
     } else {
@@ -323,37 +324,54 @@ var detectBricksCollision = function() {
 /* ---------- OTHER DRAW FUNCTIONS ------------- */
 
 var drawLose = function () {
-    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    drawText("25px 'northregular'", "#fff", "Game is over", 0, canvas.height / 2, true);
+    drawOnEmptyScreen("25px 'northregular'", "#fff", "Game is over", 0, canvas.height / 2, true, false);
 };
 
 var drawCurrentLevelNumber = function () {
-    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    drawText("30px northregular", "#fff", "Level " + (currentLevel + 1), 0, canvas.height / 2, true);
+    drawOnEmptyScreen("30px northregular", "#fff", "Level " + (currentLevel + 1), 0, canvas.height / 2, true, false);
 };
 
 var drawCongrats = function() {
-    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    drawText("25px 'northregular'", "#fff", "You won the game! Awesome!", 0, canvas.height / 2, true);
+    drawOnEmptyScreen("25px 'northregular'", "#fff", "You won the game! Awesome!", 0, canvas.height / 2, true, false);
 };
 
 var drawPaddleChoice = function() {
-    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    drawText("18px 'northregular'", "#fff", 'To have 1 paddle press "1", to have 2 - "2"', 0, canvas.height / 2, true);
+    drawOnEmptyScreen("18px 'northregular'",
+        "#fff",
+        'To have 1 paddle press "1", to have 2 - "2"',
+        0,
+        canvas.height / 2,
+        true,
+        false);
 };
 
 var drawReadMe = function() {
     var text = "Move the paddle to the left or to the right so the ball does not touch the floor. The paddle(s)" +
         " movement is controlled with <- and -> keyboardKeys or with the mouse. The final goal" +
-        " is to break all the currentUnhitBricks above before the time is up. You can choose to play with one paddle or with " +
-        "two of them. Press \"Reset\" if the game is in progress and you want to start again. The game has 6 levels.";
-    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-    canvasCtx.font = "18px 'northregular'";
-    canvasCtx.fillStyle = '#fff';
-    wrapText(text, 8, 40, canvas.width - 8, 30);
+        " is to break all the currentUnhitBricks above before the time is up. You can choose to play with one paddle " +
+        "or with two of them. Press \"Reset\" if the game is in progress and you want to start again. The game " +
+        "has 6 levels.";
+    drawOnEmptyScreen("18px 'northregular'", '#fff', text, 8, 40, false, true);
 };
 
 /* ---------- COMMON FUNCTIONS --------- */
+
+var drawOnEmptyScreen = function(font, style, text, x, y, drawInTheMiddle, wrapNeeded) {
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+    drawText(font, style, text, x, y, drawInTheMiddle, wrapNeeded);
+};
+
+var drawText = function(font, style, text, x, y, drawInTheMiddle, wrapIsNeeded) {
+    canvasCtx.font = font;
+    canvasCtx.fillStyle = style;
+    if (drawInTheMiddle) {
+        canvasCtx.fillText(text, (canvas.width / 2) - (canvasCtx.measureText(text).width / 2), y);
+    } else if(wrapIsNeeded) {
+        wrapText(text, x, y, canvas.width - x, 30);
+    } else {
+        canvasCtx.fillText(text, x, y);
+    }
+};
 
 var wrapText = function(text, x, y, maxWidth, lineHeight) {
     var words = text.split(' ');
@@ -377,16 +395,6 @@ var wrapText = function(text, x, y, maxWidth, lineHeight) {
 var checkIfHitsOnePaddle = function(thisPaddleX, thisPaddleWidth) {
     return ball.x > thisPaddleX - ball.radius
         && ball.x < thisPaddleX + thisPaddleWidth + ball.radius;
-};
-
-var drawText = function(font, style, text, x, y, middle) {
-    canvasCtx.font = font;
-    canvasCtx.fillStyle = style;
-    if (middle) {
-        canvasCtx.fillText(text, (canvas.width / 2) - (canvasCtx.measureText(text).width / 2), y);
-    } else {
-        canvasCtx.fillText(text, x, y);
-    }
 };
 
 var drawRectangle = function(x, y, width, height, color) {
