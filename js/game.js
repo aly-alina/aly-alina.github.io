@@ -206,11 +206,6 @@ var drawBricks = function() {
     for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
         for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
             if (!currentUnhitBricks[i][j].wasHit) {
-                var brickX = (commonBricksProperties.width + commonBricksProperties.padding) * j
-                    + commonBricksProperties.offsetLeft;
-                var brickY = (commonBricksProperties.height + commonBricksProperties.padding) * i
-                    + commonBricksProperties.offsetTop;
-                currentUnhitBricks[i][j] = {x: brickX, y: brickY, wasHit: false};
                 drawRectangle(currentUnhitBricks[i][j].x, currentUnhitBricks[i][j].y,
                     commonBricksProperties.width,
                     commonBricksProperties.height,
@@ -223,6 +218,7 @@ var drawBricks = function() {
 var drawPaddle = function() {
     if (numberOfPaddles == 1) {
         drawRectangle(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height, paddle.color);
+        // change position for next draw
         if (keyboardKeys.rightPressed && paddle.x + paddle.width < canvas.width)
             paddle.x += paddle.speed;
         if (keyboardKeys.leftPressed && paddle.x > 0)
@@ -235,6 +231,7 @@ var drawPaddle = function() {
                 twoPaddles[i].height,
                 twoPaddles[i].color);
         }
+        // change position for next draw
         if (keyboardKeys.rightPressed) {
             if (twoPaddles[0].x < canvas.width / 2 - twoPaddles[0].width)
                 twoPaddles[0].x += twoPaddles[0].speed;
@@ -277,7 +274,8 @@ var drawBall = function() {
     canvasCtx.fillStyle = ball.color;
     canvasCtx.fill();
     canvasCtx.closePath();
-    
+
+    // change direction for the next draw
     if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) { // if hit walls
         ball.xSpeed = -ball.xSpeed;
     }   
@@ -289,10 +287,11 @@ var drawBall = function() {
                 || checkIfHitsOnePaddle(twoPaddles[1].x, twoPaddles[1].width))) { //if hits paddle(s)
             ball.ySpeed = -ball.ySpeed;
         } else {
-            return true;
+            return true; // paddle(s) miss the ball
         }
     }
-    
+
+    // change coordinates for the next draw
     ball.x += ball.xSpeed;
     ball.y += ball.ySpeed;
 
@@ -307,13 +306,13 @@ var detectBricksCollision = function() {
                 if (ball.x > thisBrick.x
                     && ball.x < thisBrick.x + commonBricksProperties.width
                     && ball.y > thisBrick.y
-                    && ball.y < thisBrick.y + commonBricksProperties.height) {
-                    ball.ySpeed = -ball.ySpeed;
-                    thisBrick.wasHit = true;
-                    score++;
-                    if (score >= bricksPatterns[currentLevel].numberOfBricks) {
-                        return true;
-                    }
+                    && ball.y < thisBrick.y + commonBricksProperties.height) { // if ball hits the brick
+                        ball.ySpeed = -ball.ySpeed;
+                        thisBrick.wasHit = true;
+                        score++;
+                        if (score >= bricksPatterns[currentLevel].numberOfBricks) { // if level score is done
+                            return true;
+                        }
                 }
             }
         }
@@ -484,7 +483,11 @@ var bricksInit = function() {
     for (var i = 0; i < bricksPatterns[currentLevel].pattern.length; i++) {
         currentUnhitBricks[i] = [];
         for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
-            currentUnhitBricks[i][j] = {x: 0, y: 0, wasHit: bricksPatterns[currentLevel].pattern[i][j]};
+            var brickX = (commonBricksProperties.width + commonBricksProperties.padding) * j
+                + commonBricksProperties.offsetLeft;
+            var brickY = (commonBricksProperties.height + commonBricksProperties.padding) * i
+                + commonBricksProperties.offsetTop;
+            currentUnhitBricks[i][j] = {x: brickX, y: brickY, wasHit: bricksPatterns[currentLevel].pattern[i][j]};
         }
     }
 };
