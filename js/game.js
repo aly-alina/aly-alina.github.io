@@ -6,8 +6,8 @@ var ball = {
     radius: 10,
     x: 0,
     y: 0,
-    xSpeed: 3,
-    ySpeed: -3,
+    xSpeed: 2.98,
+    ySpeed: -2.98,
     color: "#655e6e"
 };
 
@@ -16,7 +16,7 @@ var paddle = {
     height: 13,
     x: 0,
     color: "#558651",
-    speed: 5
+    speed: 4.98
 }; // create one array of paddles, copy object with jQuery and refactor
 
 var twoPaddles = [
