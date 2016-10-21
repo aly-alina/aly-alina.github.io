@@ -187,7 +187,7 @@ document.addEventListener("mousemove", mousemoveHandler, false);
 /* ------------ MAIN DRAW FUNCTIONS ----------- */
 
 var drawAllGameObjects = function() {
-    requestId = window.requestAnimationFrame(drawAllGameObjects);
+    requestId = requestAnimFrame(drawAllGameObjects);
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawPaddle();
@@ -423,6 +423,15 @@ var checkIfMouseInsideCanvas = function(relativeX) {
 var followTheMouse = function(relativeX, width) {
     return relativeX - width / 2;
 };
+
+window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame
+        || window.webkitRequestAnimationFrame
+        || window.mozRequestAnimationFrame
+        || function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+            };
+})();
 
 /* ----------- CONTROL ---------- */
 
