@@ -347,8 +347,8 @@ var drawPaddleChoice = function() {
 
 var drawReadMe = function() {
     var text = "Move the paddle to the left or to the right so the ball does not touch the floor. The paddle(s)" +
-        " movement is controlled with <- and -> keyboardKeys or with the mouse. The final goal" +
-        " is to break all the currentUnhitBricks above before the time is up. You can choose to play with one paddle " +
+        " movement is controlled with <- and -> keyboard keys or with the mouse. The final goal" +
+        " is to break all the bricks above before the time is up. You can choose to play with one paddle " +
         "or with two of them. Press \"Reset\" if the game is in progress and you want to start again. The game " +
         "has 6 levels.";
     drawOnEmptyScreen("18px 'northregular'", '#fff', text, 8, 40, false, true);
