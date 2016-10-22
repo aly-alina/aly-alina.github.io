@@ -6,8 +6,8 @@ var ball = {
     radius: 10,
     x: 0,
     y: 0,
-    xSpeed: 3,
-    ySpeed: -3,
+    xSpeed: 2.98,
+    ySpeed: -2.98,
     color: "#655e6e"
 };
 
@@ -16,7 +16,7 @@ var paddle = {
     height: 13,
     x: 0,
     color: "#558651",
-    speed: 5
+    speed: 4.98
 }; // create one array of paddles, copy object with jQuery and refactor
 
 var twoPaddles = [
@@ -187,7 +187,7 @@ document.addEventListener("mousemove", mousemoveHandler, false);
 /* ------------ MAIN DRAW FUNCTIONS ----------- */
 
 var drawAllGameObjects = function() {
-    requestId = window.requestAnimationFrame(drawAllGameObjects);
+    requestId = requestAnimFrame(drawAllGameObjects);
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
     drawBricks();
     drawPaddle();
@@ -304,16 +304,22 @@ var detectBricksCollision = function() {
         for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
             var thisBrick = currentUnhitBricks[i][j];
             if (!thisBrick.wasHit) {
-                if (ball.x > thisBrick.x
-                    && ball.x < thisBrick.x + commonBricksProperties.width
-                    && ball.y > thisBrick.y
-                    && ball.y < thisBrick.y + commonBricksProperties.height) { // if ball hits the brick
+                // if ball hits the brick
+                var changeX = checkIfBallHitsAndXChanges(ball.x, ball.y, ball.radius, thisBrick,
+                    commonBricksProperties.width, commonBricksProperties.height);
+                var changeY = checkIfBallHitsAndYChanges(ball.x, ball.y, ball.radius, thisBrick,
+                    commonBricksProperties.width, commonBricksProperties.height);
+                if (changeX || changeY) {
+                    if (changeX) {
+                        ball.xSpeed = -ball.xSpeed;
+                    } else if (changeY) {
                         ball.ySpeed = -ball.ySpeed;
-                        thisBrick.wasHit = true;
-                        score++;
-                        if (score >= bricksPatterns[currentLevel].numberOfBricks) { // if level score is done
-                            return true;
-                        }
+                    }
+                    thisBrick.wasHit = true;
+                    score++;
+                    if (score >= bricksPatterns[currentLevel].numberOfBricks) { // if level score is done
+                        return true;
+                    }
                 }
             }
         }
@@ -347,8 +353,8 @@ var drawPaddleChoice = function() {
 
 var drawReadMe = function() {
     var text = "Move the paddle to the left or to the right so the ball does not touch the floor. The paddle(s)" +
-        " movement is controlled with <- and -> keyboardKeys or with the mouse. The final goal" +
-        " is to break all the currentUnhitBricks above before the time is up. You can choose to play with one paddle " +
+        " movement is controlled with <- and -> keyboard keys or with the mouse. The final goal" +
+        " is to break all the bricks above before the time is up. You can choose to play with one paddle " +
         "or with two of them. Press \"Reset\" if the game is in progress and you want to start again. The game " +
         "has 6 levels.";
     drawOnEmptyScreen("18px 'northregular'", '#fff', text, 8, 40, false, true);
@@ -422,6 +428,59 @@ var checkIfMouseInsideCanvas = function(relativeX) {
 
 var followTheMouse = function(relativeX, width) {
     return relativeX - width / 2;
+};
+
+window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame
+        || window.webkitRequestAnimationFrame
+        || window.mozRequestAnimationFrame
+        || function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+            };
+})();
+
+var checkIfBallHitsAndXChanges = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return checkIfBallRightEdgeHits(ballX, ballY, radius, brick, brickWidth, brickHeight)
+        || checkIfBallLeftEdgeHits(ballX, ballY, radius, brick, brickWidth, brickHeight);
+};
+
+var checkIfBallRightEdgeHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return (ballX + radius > brick.x)
+        && (ballX + radius < brick.x + brickWidth)
+        && (ballY < brick.y + brickHeight)
+        && (ballY > brick.y);
+};
+
+var checkIfBallLeftEdgeHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return (ballX - radius < brick.x + brickWidth)
+        && (ballX - radius > brick.x)
+        && (ballY < brick.y + brickHeight)
+        && (ballY > brick.y);
+};
+
+var checkIfBallHitsAndYChanges = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return checkIfBallTopEdgeHits(ballX, ballY, radius, brick, brickWidth, brickHeight)
+        || checkIfBallBottomEdgeHits(ballX, ballY, radius, brick, brickWidth, brickHeight)
+        || checkIfBallMiddleHits(ballX, ballY, radius, brick, brickWidth, brickHeight);
+};
+
+var checkIfBallTopEdgeHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return (ballY - radius < brick.y + brickHeight)
+        && (ballY - radius > brick.y)
+        && (ballX > brick.x)
+        && (ballX < brick.x + brickWidth);
+};
+
+var checkIfBallBottomEdgeHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return (ballY + radius > brick.y)
+        && (ballY + radius < brick.y + brickHeight)
+        && (ballX > brick.x)
+        && (ballX < brick.x + brickWidth);
+};
+
+var checkIfBallMiddleHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight) {
+    return (ballX > brick.x && ballX < brick.x + brickWidth
+        && ballY > brick.y && ballY < brick.y + brickHeight);
 };
 
 /* ----------- CONTROL ---------- */
