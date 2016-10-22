@@ -304,16 +304,22 @@ var detectBricksCollision = function() {
         for (var j = 0; j < bricksPatterns[currentLevel].pattern[i].length; j++) {
             var thisBrick = currentUnhitBricks[i][j];
             if (!thisBrick.wasHit) {
-                if (ball.x > thisBrick.x
-                    && ball.x < thisBrick.x + commonBricksProperties.width
-                    && ball.y > thisBrick.y
-                    && ball.y < thisBrick.y + commonBricksProperties.height) { // if ball hits the brick
+                // if ball hits the brick
+                var changeX = checkIfBallHitsAndXChanges(ball.x, ball.y, ball.radius, thisBrick,
+                    commonBricksProperties.width, commonBricksProperties.height);
+                var changeY = checkIfBallHitsAndYChanges(ball.x, ball.y, ball.radius, thisBrick,
+                    commonBricksProperties.width, commonBricksProperties.height);
+                if (changeX || changeY) {
+                    if (changeX) {
+                        ball.xSpeed = -ball.xSpeed;
+                    } else if (changeY) {
                         ball.ySpeed = -ball.ySpeed;
-                        thisBrick.wasHit = true;
-                        score++;
-                        if (score >= bricksPatterns[currentLevel].numberOfBricks) { // if level score is done
-                            return true;
-                        }
+                    }
+                    thisBrick.wasHit = true;
+                    score++;
+                    if (score >= bricksPatterns[currentLevel].numberOfBricks) { // if level score is done
+                        return true;
+                    }
                 }
             }
         }
@@ -432,6 +438,50 @@ window.requestAnimFrame = (function(){
             window.setTimeout(callback, 1000 / 60);
             };
 })();
+
+var checkIfBallHitsAndXChanges = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return checkIfBallRightEdgeHits(ballX, ballY, radius, brick, brickWidth, brickHeight)
+        || checkIfBallLeftEdgeHits(ballX, ballY, radius, brick, brickWidth, brickHeight);
+};
+
+var checkIfBallRightEdgeHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return (ballX + radius > brick.x)
+        && (ballX + radius < brick.x + brickWidth)
+        && (ballY < brick.y + brickHeight)
+        && (ballY > brick.y);
+};
+
+var checkIfBallLeftEdgeHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return (ballX - radius < brick.x + brickWidth)
+        && (ballX - radius > brick.x)
+        && (ballY < brick.y + brickHeight)
+        && (ballY > brick.y);
+};
+
+var checkIfBallHitsAndYChanges = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return checkIfBallTopEdgeHits(ballX, ballY, radius, brick, brickWidth, brickHeight)
+        || checkIfBallBottomEdgeHits(ballX, ballY, radius, brick, brickWidth, brickHeight)
+        || checkIfBallMiddleHits(ballX, ballY, radius, brick, brickWidth, brickHeight);
+};
+
+var checkIfBallTopEdgeHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return (ballY - radius < brick.y + brickHeight)
+        && (ballY - radius > brick.y)
+        && (ballX > brick.x)
+        && (ballX < brick.x + brickWidth);
+};
+
+var checkIfBallBottomEdgeHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight){
+    return (ballY + radius > brick.y)
+        && (ballY + radius < brick.y + brickHeight)
+        && (ballX > brick.x)
+        && (ballX < brick.x + brickWidth);
+};
+
+var checkIfBallMiddleHits = function(ballX, ballY, radius, brick, brickWidth, brickHeight) {
+    return (ballX > brick.x && ballX < brick.x + brickWidth
+        && ballY > brick.y && ballY < brick.y + brickHeight);
+};
 
 /* ----------- CONTROL ---------- */
 
