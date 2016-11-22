@@ -46,6 +46,11 @@ var paddle = {
     speed: 4.98
 };
 
+var bricksColors = {
+    normal: "#6796a3",
+    bonus: "#cc7832"
+};
+
 var bricksPatterns = [
     {
         numberOfBricks: 40,
@@ -56,10 +61,10 @@ var bricksPatterns = [
             [false, false, false, false, false, false, false, false, false, false]
         ],
         color: [
-            ['#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#cc7832', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#cc7832', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
+            [bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']]
         ]
     },
     {
@@ -71,10 +76,10 @@ var bricksPatterns = [
             [false, false, true, false, false, false, false, true, false, false]
         ],
         color: [
-            ['#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#cc7832', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#cc7832', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
+            [bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']]
         ]
     },
     {
@@ -89,13 +94,13 @@ var bricksPatterns = [
             [true, false, true, false, true, false, true, false, true, false]
         ],
         color: [
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']]
         ]
     },
     {
@@ -109,12 +114,12 @@ var bricksPatterns = [
             [true, false, true, false, true, false, true, false, true, false]
         ],
         color: [
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']]
         ]
     },
     {
@@ -126,10 +131,10 @@ var bricksPatterns = [
             [false, false, true, true, false, false, false, false, false, false]
         ],
         color: [
-            ['#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#cc7832', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
+            [bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']]
         ]
     },
     {
@@ -141,10 +146,10 @@ var bricksPatterns = [
             [false, false, false, false, true, true, false, false, false, false]
         ],
         color: [
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#cc7832', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
-            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3']
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']],
+            [bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal'], bricksColors['bonus'], bricksColors['normal'], bricksColors['normal'], bricksColors['normal']]
         ]
     }
 ];
@@ -155,7 +160,7 @@ var commonBricksProperties = {
     width: 45,
     height: 12,
     padding: 10,
-    color: "#6796a3"
+    color: bricksColors['normal']
 };
 
 var currentUnhitBricks = [];
@@ -166,6 +171,7 @@ var keyboardKeys = {
 };
 
 var score = 0;
+var thisLevelMaxScore = 0;
 var currentLevel = 0;
 var numberOfLevels = 6;
 var requestId = 0; // used in requestAnimationFrame (function drawAllGameObjects())
@@ -601,8 +607,25 @@ var initLevel = function() {
     }
 };
 
+var calculateMaxLevelScore = function() {
+    var sum = 0;
+    for (var i = 0; i < bricksPatterns[currentLevel].color.length; i++) {
+        for (var j = 0; j < bricksPatterns[currentLevel].color[i].length; j++) {
+            if (!bricksPatterns[currentLevel].pattern[i][j]) {
+                if (bricksPatterns[currentLevel].color[i][j] == bricksColors.normal) {
+                    sum++
+                } else if (bricksPatterns[currentLevel].color[i][j] == bricksColors.bonus) {
+                    sum += 5;
+                }
+            }
+        }
+    }
+    return sum;
+};
+
 var resetVariables = function() {
     score = 0;
+    thisLevelMaxScore = calculateMaxLevelScore();
     ball.x = canvas.width / 2;
     ball.y = canvas.height - ball.radius * 6;
     ball.xSpeed = 3;
