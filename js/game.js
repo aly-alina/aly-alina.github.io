@@ -104,8 +104,7 @@ var requestId = 0; // used in requestAnimationFrame (function drawAllGameObjects
 var timeForLevel = 120000; // time (ms) given to finish the level otherwise, lose
 var deadline = {}; // Date object to store when the level's timer is up
 var timeToDisplayLevelNumber = 3000; // delay before the game starts to show current level on the screen
-var numberOfPaddles = 1;
-var paddleScreenIsOn = false; // screen offering to choose number of paddles before the game starts
+var ballSizeChoiceScreenIsOn = false; // screen offering to choose number of paddles before the game starts
 var gameIsOn = false; // true if the actual game is in progress
 
 /* ----------- EVENT HANDLERS ----------- */
@@ -115,13 +114,6 @@ var keyDownHandler = function(e) {
         keyboardKeys.rightPressed = true;
     else if (e.keyCode == 37)
         keyboardKeys.leftPressed = true;
-    else if (paddleScreenIsOn) {
-        if (e.keyCode == 49)
-            numberOfPaddles = 1;
-        else if (e.keyCode == 50)
-            numberOfPaddles = 2;
-        initLevel();
-    }
 };
 
 var keyUpHandler = function(e) {
@@ -129,14 +121,24 @@ var keyUpHandler = function(e) {
         keyboardKeys.rightPressed = false;
     else if (e.keyCode == 37)
         keyboardKeys.leftPressed = false;
-    else if (paddleScreenIsOn && (e.keyCode == 49 || e.keyCode == 50)) // 1 or 2
-        paddleScreenIsOn = false;
 };
 
 var mousemoveHandler = function(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
     if (checkIfMouseInsideCanvas(relativeX)) {
         paddle.x = followTheMouse(relativeX, paddle.width);
+    }
+};
+
+var mouseDownHandler = function() {
+    if (ballSizeChoiceScreenIsOn) {
+        initLevel();
+    }
+};
+
+var mouseUpHandler = function() {
+    if (ballSizeChoiceScreenIsOn) {
+        ballSizeChoiceScreenIsOn = false;
     }
 };
 
@@ -158,6 +160,8 @@ var readme = function(e) {
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mousemoveHandler, false);
+canvas.addEventListener("mousedown", mouseDownHandler, false);
+canvas.addEventListener("mouseup", mouseUpHandler, false);
 
 /* ------------ MAIN DRAW FUNCTIONS ----------- */
 
@@ -295,9 +299,9 @@ var drawCongrats = function() {
 var drawPaddleChoice = function() {
     drawOnEmptyScreen("18px 'northregular'",
         "#fff",
-        'To have 1 paddle press "1", to have 2 - "2"',
+        'Choose the ball size:',
         0,
-        canvas.height / 2,
+        50,
         true,
         false);
 };
@@ -460,7 +464,7 @@ var initGame = function() {
     currentLevel = 0;
     gameIsOn = true;
     drawPaddleChoice();
-    paddleScreenIsOn = true; // game continues when a user chooses number of paddles (keyDownHandler())
+    ballSizeChoiceScreenIsOn = true; // game continues when a user chooses number of paddles (keyDownHandler())
     // when 1 or 2 pressed, initLevel() is called
 };
 
