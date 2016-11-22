@@ -352,8 +352,13 @@ var detectBricksCollision = function() {
                         ball.ySpeed = -ball.ySpeed;
                     }
                     thisBrick.wasHit = true;
-                    score++;
-                    if (score >= bricksPatterns[currentLevel].numberOfBricks) { // if level score is done
+                    var thisBrickColor = bricksPatterns[currentLevel].color[i][j];
+                    if (thisBrickColor == bricksColors.normal) {
+                        score++;
+                    } else if (thisBrickColor = bricksColors.bonus) {
+                        score += 5;
+                    }
+                    if (score >= thisLevelMaxScore) { // if level score is done
                         return true;
                     }
                 }
