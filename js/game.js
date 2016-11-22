@@ -11,6 +11,33 @@ var ball = {
     color: "#655e6e"
 };
 
+var ballRadiuses = {
+    small: 7,
+    medium: 10,
+    large: 16
+};
+
+var ballAreas = {
+    small: {
+        x_left: 0,
+        x_right: 0,
+        y_top: 0,
+        y_bottom: 0
+    },
+    medium: {
+        x_left: 0,
+        x_right: 0,
+        y_top: 0,
+        y_bottom: 0
+    },
+    large: {
+        x_left: 0,
+        x_right: 0,
+        y_top: 0,
+        y_bottom: 0
+    }
+};
+
 var paddle = {
     width: 110,
     height: 13,
@@ -130,8 +157,20 @@ var mousemoveHandler = function(e) {
     }
 };
 
-var mouseDownHandler = function() {
+var mouseDownHandler = function(e) {
     if (ballSizeChoiceScreenIsOn) {
+        var relativeX = e.clientX - canvas.offsetLeft;
+        var relativeY = e.clientY - canvas.offsetTop;
+        for (var ballProp in ballAreas) {
+            if (ballAreas.hasOwnProperty(ballProp)) {
+                if (checkIfClickedThisBall(ballProp, relativeX, relativeY)) {
+                    if (ballRadiuses.hasOwnProperty(ballProp)) {
+                        ball['radius'] = ballRadiuses[ballProp];
+                        console.log(ballProp);
+                    }
+                }
+            }
+        }
         initLevel();
     }
 };
@@ -226,11 +265,7 @@ var drawTimer = function() {
 };
 
 var drawBall = function() {
-    canvasCtx.beginPath();
-    canvasCtx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-    canvasCtx.fillStyle = ball.color;
-    canvasCtx.fill();
-    canvasCtx.closePath();
+    drawCircle(canvasCtx, ball.x, ball.y, ball.radius, ball.color);
 
     // change direction for the next draw
     if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) { // if hit walls
@@ -284,6 +319,14 @@ var detectBricksCollision = function() {
 
 /* ---------- OTHER DRAW FUNCTIONS ------------- */
 
+var drawCircle = function(canvasCtx, x, y, radius, color) {
+    canvasCtx.beginPath();
+    canvasCtx.arc(x, y, radius, 0, Math.PI*2);
+    canvasCtx.fillStyle = color;
+    canvasCtx.fill();
+    canvasCtx.closePath();
+};
+
 var drawLose = function () {
     drawOnEmptyScreen("25px 'northregular'", "#fff", "Game is over", 0, canvas.height / 2, true, false);
 };
@@ -296,14 +339,36 @@ var drawCongrats = function() {
     drawOnEmptyScreen("25px 'northregular'", "#fff", "You won the game! Awesome!", 0, canvas.height / 2, true, false);
 };
 
-var drawPaddleChoice = function() {
+var drawBallSizeChoice = function() {
     drawOnEmptyScreen("18px 'northregular'",
         "#fff",
-        'Choose the ball size:',
+        'Choose the size of the ball:',
         0,
-        50,
+        canvas.height / 8,
         true,
         false);
+    drawCircle(canvasCtx, canvas.width / 4, canvas.height / 2, ballRadiuses['small'] * 3, ball.color);
+    setBallAreas(
+        'small',
+        canvas.width / 4 - ballRadiuses['small'] * 3,
+        canvas.width / 4 + ballRadiuses['small'] * 3,
+        canvas.height / 2 + ballRadiuses['small'] * 3,
+        canvas.height / 2 - ballRadiuses['small'] * 3);
+    drawCircle(canvasCtx, canvas.width / 2, canvas.height / 2, ballRadiuses['medium'] * 3, ball.color);
+    setBallAreas(
+        'medium',
+        canvas.width / 2 - ballRadiuses['medium'] * 3,
+        canvas.width / 2 + ballRadiuses['medium'] * 3,
+        canvas.height / 2 + ballRadiuses['medium'] * 3,
+        canvas.height / 2 - ballRadiuses['medium'] * 3);
+    drawCircle(canvasCtx, canvas.width / 2 + canvas.width / 4,
+        canvas.height / 2, ballRadiuses['large'] * 3, ball.color);
+    setBallAreas(
+        'large',
+        canvas.width / 2 + canvas.width / 4 - ballRadiuses['large'] * 3,
+        canvas.width / 2 + canvas.width / 4 + ballRadiuses['large'] * 3,
+        canvas.height / 2 + ballRadiuses['large'] * 3,
+        canvas.height / 2 - ballRadiuses['large'] * 3);
 };
 
 var drawReadMe = function() {
@@ -360,6 +425,20 @@ var drawRectangle = function(x, y, width, height, color) {
 };
 
 /* ---------- COMMON FUNCTIONS --------- */
+
+var setBallAreas = function(ballName, x_left, x_right, y_top, y_bottom) {
+    ballAreas[ballName]['x_left'] = x_left;
+    ballAreas[ballName]['x_right'] = x_right;
+    ballAreas[ballName]['y_top'] = y_top;
+    ballAreas[ballName]['y_bottom'] = y_bottom;
+};
+
+var checkIfClickedThisBall = function(ballPropertyName, mouseX, mouseY) {
+    return mouseX >= ballAreas[ballPropertyName]['x_left']
+        && mouseX <= ballAreas[ballPropertyName]['x_right']
+        && mouseY >= ballAreas[ballPropertyName]['y_bottom']
+        && mouseY <= ballAreas[ballPropertyName]['y_top'];
+};
 
 var checkIfHitsOnePaddle = function(thisPaddleX, thisPaddleWidth) {
     return ball.x > thisPaddleX - ball.radius
@@ -463,7 +542,7 @@ var cancelAnimation = function() {
 var initGame = function() {
     currentLevel = 0;
     gameIsOn = true;
-    drawPaddleChoice();
+    drawBallSizeChoice();
     ballSizeChoiceScreenIsOn = true; // game continues when a user chooses number of paddles (keyDownHandler())
     // when 1 or 2 pressed, initLevel() is called
 };
