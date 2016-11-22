@@ -54,6 +54,12 @@ var bricksPatterns = [
             [false, false, false, false, false, false, false, false, false, false],
             [false, false, false, false, false, false, false, false, false, false],
             [false, false, false, false, false, false, false, false, false, false]
+        ],
+        color: [
+            ['#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#cc7832', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#cc7832', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
         ]
     },
     {
@@ -63,6 +69,12 @@ var bricksPatterns = [
             [false, false, false, true, false, false, true, false, false, false],
             [false, false, false, true, false, false, true, false, false, false],
             [false, false, true, false, false, false, false, true, false, false]
+        ],
+        color: [
+            ['#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#cc7832', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#cc7832', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
         ]
     },
     {
@@ -75,6 +87,15 @@ var bricksPatterns = [
             [true, false, true, false, true, false, true, false, true, false],
             [false, true, false, true, false, true, false, true, false, true],
             [true, false, true, false, true, false, true, false, true, false]
+        ],
+        color: [
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
         ]
     },
     {
@@ -86,6 +107,14 @@ var bricksPatterns = [
             [true, false, true, false, true, false, true, false, true, false],
             [false, false, true, false, false, false, true, false, false, false],
             [true, false, true, false, true, false, true, false, true, false]
+        ],
+        color: [
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
         ]
     },
     {
@@ -95,6 +124,12 @@ var bricksPatterns = [
             [false, false, false, false, false, false, true, true, false, false],
             [false, false, false, false, true, true, false, false, false, false],
             [false, false, true, true, false, false, false, false, false, false]
+        ],
+        color: [
+            ['#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#cc7832', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3']
         ]
     },
     {
@@ -104,6 +139,12 @@ var bricksPatterns = [
             [false, false, false, false, true, true, false, false, false, false],
             [true, false, false, false, false, false, false, false, false, true],
             [false, false, false, false, true, true, false, false, false, false]
+        ],
+        color: [
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#cc7832', '#cc7832', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3'],
+            ['#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#6796a3', '#cc7832', '#6796a3', '#6796a3', '#6796a3']
         ]
     }
 ];
@@ -166,7 +207,6 @@ var mouseDownHandler = function(e) {
                 if (checkIfClickedThisBall(ballProp, relativeX, relativeY)) {
                     if (ballRadiuses.hasOwnProperty(ballProp)) {
                         ball['radius'] = ballRadiuses[ballProp];
-                        console.log(ballProp);
                     }
                 }
             }
@@ -227,7 +267,7 @@ var drawBricks = function() {
                 drawRectangle(currentUnhitBricks[i][j].x, currentUnhitBricks[i][j].y,
                     commonBricksProperties.width,
                     commonBricksProperties.height,
-                    commonBricksProperties.color);
+                    bricksPatterns[currentLevel].color[i][j]);
             }
         }
     }
