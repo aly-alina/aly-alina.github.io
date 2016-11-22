@@ -213,17 +213,13 @@ var mouseDownHandler = function(e) {
                 if (checkIfClickedThisBall(ballProp, relativeX, relativeY)) {
                     if (ballRadiuses.hasOwnProperty(ballProp)) {
                         ball['radius'] = ballRadiuses[ballProp];
+                        initLevel();
+                        ballSizeChoiceScreenIsOn = false;
+                        return;
                     }
                 }
             }
         }
-        initLevel();
-    }
-};
-
-var mouseUpHandler = function() {
-    if (ballSizeChoiceScreenIsOn) {
-        ballSizeChoiceScreenIsOn = false;
     }
 };
 
@@ -246,7 +242,6 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("mousemove", mousemoveHandler, false);
 canvas.addEventListener("mousedown", mouseDownHandler, false);
-canvas.addEventListener("mouseup", mouseUpHandler, false);
 
 /* ------------ MAIN DRAW FUNCTIONS ----------- */
 
