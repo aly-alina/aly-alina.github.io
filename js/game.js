@@ -17,24 +17,7 @@ var paddle = {
     x: 0,
     color: "#558651",
     speed: 4.98
-}; // create one array of paddles, copy object with jQuery and refactor
-
-var twoPaddles = [
-    {
-        width: 110,
-        height: 13,
-        x: 0,
-        color: "#558651",
-        speed: 5
-    },
-    {
-        width: 110,
-        height: 13,
-        x: 0,
-        color: "#558651",
-        speed: 5
-    }
-];
+};
 
 var bricksPatterns = [
     {
@@ -152,16 +135,8 @@ var keyUpHandler = function(e) {
 
 var mousemoveHandler = function(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
-    if (numberOfPaddles == 1) {
-        if (checkIfMouseInsideCanvas(relativeX)) {
-            paddle.x = followTheMouse(relativeX, paddle.width);
-        }
-    } else if(numberOfPaddles == 2) {
-        if (checkIfMouseInsideCanvas(relativeX)) {
-            relativeX /= 2;
-            twoPaddles[0].x = followTheMouse(relativeX, twoPaddles[0].width);
-            twoPaddles[1].x = canvas.width / 2 + followTheMouse(relativeX, twoPaddles[1].width);
-        }
+    if (checkIfMouseInsideCanvas(relativeX)) {
+        paddle.x = followTheMouse(relativeX, paddle.width);
     }
 };
 
@@ -216,35 +191,12 @@ var drawBricks = function() {
 };
 
 var drawPaddle = function() {
-    if (numberOfPaddles == 1) {
-        drawRectangle(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height, paddle.color);
-        // change position for next draw
-        if (keyboardKeys.rightPressed && paddle.x + paddle.width < canvas.width)
-            paddle.x += paddle.speed;
-        if (keyboardKeys.leftPressed && paddle.x > 0)
-            paddle.x -= paddle.speed;
-    } else if (numberOfPaddles == 2) {
-        for (var i = 0; i < twoPaddles.length; i++) {
-            drawRectangle(twoPaddles[i].x,
-                canvas.height - twoPaddles[i].height,
-                twoPaddles[i].width,
-                twoPaddles[i].height,
-                twoPaddles[i].color);
-        }
-        // change position for next draw
-        if (keyboardKeys.rightPressed) {
-            if (twoPaddles[0].x < canvas.width / 2 - twoPaddles[0].width)
-                twoPaddles[0].x += twoPaddles[0].speed;
-            if (twoPaddles[1].x < canvas.width - twoPaddles[1].width)
-                twoPaddles[1].x += twoPaddles[1].speed;
-        }
-        if (keyboardKeys.leftPressed) {
-            if (twoPaddles[0].x > 0)
-                twoPaddles[0].x -= twoPaddles[0].speed;
-            if (twoPaddles[1].x > canvas.width / 2)
-                twoPaddles[1].x -= twoPaddles[1].speed;
-        }
-    }
+    drawRectangle(paddle.x, canvas.height - paddle.height, paddle.width, paddle.height, paddle.color);
+    // change position for next draw
+    if (keyboardKeys.rightPressed && paddle.x + paddle.width < canvas.width)
+        paddle.x += paddle.speed;
+    if (keyboardKeys.leftPressed && paddle.x > 0)
+        paddle.x -= paddle.speed;
 };
 
 var drawScore = function() {
@@ -283,13 +235,12 @@ var drawBall = function() {
     if (ball.y - ball.radius < 0) { // if hit ceiling
         ball.ySpeed = -ball.ySpeed;
     } else if (ball.y + ball.ySpeed >= canvas.height - ball.radius - paddle.height) { //if hits floor
-        if (numberOfPaddles == 1 && checkIfHitsOnePaddle(paddle.x, paddle.width)
-            || numberOfPaddles == 2 && (checkIfHitsOnePaddle(twoPaddles[0].x, twoPaddles[0].width)
-                || checkIfHitsOnePaddle(twoPaddles[1].x, twoPaddles[1].width))) { //if hits paddle(s)
+        if (checkIfHitsOnePaddle(paddle.x, paddle.width)) {
             ball.ySpeed = -ball.ySpeed;
         } else {
             return true; // paddle(s) miss the ball
         }
+
     }
 
     // change coordinates for the next draw
@@ -352,7 +303,7 @@ var drawPaddleChoice = function() {
 };
 
 var drawReadMe = function() {
-    var text = "Move the paddle to the left or to the right so the ball does not touch the floor. The paddle(s)" +
+    var text = "Move the paddle to the left or to the right so the ball does not touch the floor. The paddle" +
         " movement is controlled with <- and -> keyboard keys or with the mouse. The final goal" +
         " is to break all the bricks above before the time is up. You can choose to play with one paddle " +
         "or with two of them. Press \"Reset\" if the game is in progress and you want to start again. The game " +
@@ -538,12 +489,7 @@ var resetVariables = function() {
 };
 
 var initPaddlesPositions = function () {
-    if (numberOfPaddles == 1) {
-        paddle.x = canvas.width / 2 - paddle.width / 2;
-    } else if (numberOfPaddles == 2) {
-        twoPaddles[0].x = 0;
-        twoPaddles[1].x = canvas.width / 2;
-    }
+    paddle.x = canvas.width / 2 - paddle.width / 2;
 };
 
 var bricksInit = function() {
