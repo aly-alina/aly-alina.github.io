@@ -420,8 +420,9 @@ var drawBallSizeChoice = function() {
 var drawReadMe = function() {
     var text = "Move the paddle to the left or to the right so the ball does not touch the floor. The paddle" +
         " movement is controlled with <- and -> keyboard keys or with the mouse. The final goal" +
-        " is to break all the bricks above before the time is up. You can choose to play with one paddle " +
-        "or with two of them. Press \"Reset\" if the game is in progress and you want to start again. The game " +
+        " is to break all the bricks above before the time is up. Blue bricks give 1 point and orange ones: 5 points. " + 
+        "You can choose the size of the ball to play with. " +
+        "Press \"Reset\" if the game is in progress and you want to start again. The game " +
         "has 6 levels.";
     drawOnEmptyScreen("18px 'northregular'", '#fff', text, 8, 40, false, true);
 };
